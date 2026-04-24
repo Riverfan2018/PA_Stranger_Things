@@ -4,10 +4,6 @@
  */
 package PA;
 
-/**
- *
- * @author cesar
- */
 public class Sistemageneral {
     
 }

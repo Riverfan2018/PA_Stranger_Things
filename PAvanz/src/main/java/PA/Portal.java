@@ -1,20 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package PA;
 
-/**
- *
- * @author cesar
- */
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Portal {
     private final String nombre;
-    private final int tamanogrupo;
+    private final int tamanoGrupo; //La verdad lo quisiera llamar size, :(
     private final Zona zonadestino;
     private final Sistemageneral sistema;
 
@@ -30,28 +22,29 @@ public class Portal {
    
     private int ninosregresando = 0;
 
+    // Constructor
     public Portal(String nombre, int tamanogrupo, Zona destino, Sistemageneral sistema) {
         this.nombre = nombre;
-        this.tamanogrupo = tamanogrupo;
+        this.tamanoGrupo = tamanogrupo;
         this.zonadestino = destino;
         this.sistema = sistema;
     }
-
-       
+    
+    //
     public void esperarycruzar(Child nino) throws InterruptedException {
 
         lock.lock();
         try {
             
-            while (sistema.hayapagon) {
-                esperagrupo.await(); 
+            while (sistema.hayApagon) {
+                esperagrupo.await();
             }
 
             
             ninosesperandoGrupo++;
-           System.out.println(nino.getnombreID() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
+           System.out.println(nino.getNinoId() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
             
-            if (ninosesperandoGrupo < tamanogrupo) {
+            if (ninosesperandoGrupo < tamanoGrupo) {
                 esperagrupo.await(); 
             } else {
                 ninosesperandoGrupo = 0;
@@ -62,14 +55,16 @@ public class Portal {
             while (ninosregresando > 0) {
                 esperaretorno.await();
             }
+        } catch (Exception e) {
+            System.out.println("Something went wrong.");
         } finally {
-            lock.unlock();
+            lock.unlock(); // Si ocurre una excepción el Lock se queda lockeado
         }
 
        
         pasounico.acquire(); 
         try {
-            System.out.println(nino.getnombreID() + " está cruzando el portal " + nombre);
+            System.out.println(nino.getNinoId() + " está cruzando el portal " + nombre);
             Thread.sleep(1000); 
         } finally {
             pasounico.release();
@@ -87,7 +82,7 @@ public class Portal {
         
         pasounico.acquire();
         try {
-            System.out.println(nino.getnombreID() + " regresa a Hawkins por el portal " + nombre);
+            System.out.println(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
             Thread.sleep(1000);
         } finally {
             pasounico.release();
@@ -102,5 +97,9 @@ public class Portal {
                 lock.unlock();
             }
         }
+    }
+    
+    public Zona getZonaDestino() {
+        return zonadestino;
     }
 }

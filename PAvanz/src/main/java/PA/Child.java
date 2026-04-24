@@ -1,22 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package PA;
 
-
-/**
- *
- * @author lukal
- */
 public class Child extends Thread{
     private static int contadorId = 0;
     private final String id;
     private final Sistemageneral sistema;
     private boolean capturado = false;
     
-
-
     public Child(String id, Sistemageneral sistema) {
         this.id = id;
         this.sistema = sistema;
@@ -25,30 +14,30 @@ public class Child extends Thread{
     @Override
     public void run() {
  
-        sistema.calleprincipal.entrar(this);
+        sistema.callePrincipal.entrar(this);
         
         while (true) {
             try {
  
-                sistema.calleprincipal.salir(this);
-                sistema.sotanobyers.entrar(this);
+                sistema.callePrincipal.salir(this);
+                sistema.sotanoByers.entrar(this);
                 System.out.println(id + " ha entrado al Sótano Byers.");
                 Thread.sleep(random(1000, 2000));
                 
-                Portal portal = sistema.seleccionarportalaleatorio();
-                sistema.sotanobyers.salir(this);
+                Portal portal = sistema.seleccionarPortalAleatorio();
+                sistema.sotanoByers.salir(this);
                 
 
                 portal.esperarycruzar(this); 
                 
 
-                Zona zonaUD = portal.getzonadestino();
+                Zona zonaUD = portal.getZonaDestino();
                 zonaUD.entrar(this);
-                System.out.println(id + " ha llegado a " + zonaUD.getnombre());
+                System.out.println(id + " ha llegado a " + zonaUD.getTipo());
 
                 
                 long tiemporecoleccion = random(3000, 5000);
-                if (sistema.istormentaactiva()) tiemporecoleccion *= 2;
+                if (sistema.isTormentaActiva()) tiemporecoleccion *= 2;
                 
                 
                 esperarenzona(tiemporecoleccion);
@@ -68,7 +57,7 @@ public class Child extends Thread{
                 }
 
                
-                sistema.calleprincipal.entrar(this);
+                sistema.callePrincipal.entrar(this);
                 Thread.sleep(random(3000, 5000));
                 
             } catch (InterruptedException e) {
@@ -99,4 +88,7 @@ public class Child extends Thread{
         return (long) (Math.random() * (max - min) + min);
     }
     
+    public String getNinoId() {
+        return id;
+    }
 }

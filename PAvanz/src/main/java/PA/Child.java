@@ -9,5 +9,7 @@ package PA;
  * @author lukal
  */
 public class Child {
+    private String id;
+    private String zonaaztual;
     
 }

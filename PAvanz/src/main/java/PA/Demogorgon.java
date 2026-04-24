@@ -4,10 +4,14 @@
  */
 package PA;
 
-/**
- *
- * @author lukal
- */
 public class Demogorgon {
+    private String id;
+    private String zonaaztual;
+    
+    
+    
+    
+    
+    
     
 }

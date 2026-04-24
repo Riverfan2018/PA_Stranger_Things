@@ -1,5 +1,5 @@
 package PA;
 
-public class Main {
+public class Zona {
     
 }

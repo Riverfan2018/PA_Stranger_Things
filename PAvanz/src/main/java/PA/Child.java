@@ -4,6 +4,7 @@
  */
 package PA;
 
+
 /**
  *
  * @author lukal
@@ -11,30 +12,31 @@ package PA;
 public class Child extends Thread{
     private static int contadorId = 0;
     private final String id;
-    private final Sistemageneral mundo;
+    private final Sistemageneral sistema;
     private boolean capturado = false;
+    
 
 
-    public Child(String id, Sistemageneral mundo) {
+    public Child(String id, Sistemageneral sistema) {
         this.id = id;
-        this.mundo = mundo;
+        this.sistema = sistema;
     }
 
     @Override
     public void run() {
  
-        mundo.callePrincipal.entrar(this);
+        sistema.calleprincipal.entrar(this);
         
         while (true) {
             try {
  
-                mundo.calleprincipal.salir(this);
-                mundo.sotanobyers.entrar(this);
+                sistema.calleprincipal.salir(this);
+                sistema.sotanobyers.entrar(this);
                 System.out.println(id + " ha entrado al Sótano Byers.");
                 Thread.sleep(random(1000, 2000));
                 
-                Portal portal = mundo.seleccionarportalaleatorio();
-                mundo.sotanobyers.salir(this);
+                Portal portal = sistema.seleccionarportalaleatorio();
+                sistema.sotanobyers.salir(this);
                 
 
                 portal.esperarycruzar(this); 
@@ -46,7 +48,7 @@ public class Child extends Thread{
 
                 
                 long tiemporecoleccion = random(3000, 5000);
-                if (mundo.istormentaactiva()) tiemporecoleccion *= 2;
+                if (sistema.istormentaactiva()) tiemporecoleccion *= 2;
                 
                 
                 esperarenzona(tiemporecoleccion);
@@ -58,15 +60,15 @@ public class Child extends Thread{
                     portal.regresaraHawkins(this);
                     
                     
-                    mundo.radioWSQK.entrar(this);
+                    sistema.radioWSQK.entrar(this);
                     Thread.sleep(random(2000, 4000));
-                    mundo.radioWSQK.salir(this);
+                    sistema.radioWSQK.salir(this);
                 } else {
                     esperarrescate();
                 }
 
                
-                mundo.calleprincipal.entrar(this);
+                sistema.calleprincipal.entrar(this);
                 Thread.sleep(random(3000, 5000));
                 
             } catch (InterruptedException e) {

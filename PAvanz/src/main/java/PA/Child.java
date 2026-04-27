@@ -37,7 +37,7 @@ public class Child extends Thread{
 
                 
                 long tiemporecoleccion = random(3000, 5000);
-                if (sistema.isTormentaActiva()) tiemporecoleccion *= 2;
+                if (sistema.tormentaon()) tiemporecoleccion *= 2;
                 
                 
                 esperarenzona(tiemporecoleccion);

@@ -61,7 +61,7 @@ public class Zona {
     }
     
     // Para que Daddy Demogorgon se lleve un niño ramdom
-    public Child seleccionarNinoAleatorio() {
+    public Child seleccionarninoaleatorio() {
         lock.lock();
         try {
             if (ninosPresentes.isEmpty()) return null;
@@ -72,7 +72,7 @@ public class Zona {
         }
     }
     
-    public Child capturarNino(Child nino) {
+    public Child capturarnino(Child nino) {
         lock.lock();
         try {
             if (ninosPresentes.remove(nino)) {

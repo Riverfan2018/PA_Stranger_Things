@@ -205,11 +205,14 @@ public class Sistemageneral {
     }
     
     private void ejecutar_evento(int tipo) throws InterruptedException {
+        java.util.Random rnd = new java.util.Random();
+        long duracion = 5000 + rnd.nextInt(5001);
+        
         switch (tipo) {
             case 0: // APAGÓN
                 System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
                 this.hayApagon = true; // Bloquea portales y movimiento de bichos
-                Thread.sleep(10000);   
+                Thread.sleep(duracion);   
                 this.hayApagon = false;
                 despertar_portales();   // Notifica a los niños que esperaban
                 System.out.println("Apagón finalizado");
@@ -218,7 +221,7 @@ public class Sistemageneral {
             case 1: // TORMENTA
                 System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
                 this.setTormentaActiva(true); // Duplica recolección y velocidad de bicho
-                Thread.sleep(15000);
+                Thread.sleep(duracion);
                 this.setTormentaActiva(false);
                 System.out.println("Tormenta finalizada");
                 break;
@@ -240,14 +243,14 @@ public class Sistemageneral {
                     }
                 }
                 System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
-                Thread.sleep(5000); // Duración de la parálisis
+                Thread.sleep(duracion); // Duración de la parálisis
                 this.eleveen_enfadada = false;
                 break;
 
             case 3: // RED MENTAL
                 System.out.println("EVENTO: LA RED MENTAL");
                 this.red_mental_on = true; // Demogorgons van a la zona con más niños
-                Thread.sleep(12000);
+                Thread.sleep(duracion);
                 this.red_mental_on = false;
                 System.out.println("Red mental desconectada");
                 break;

@@ -32,18 +32,15 @@ public class Portal {
     
     //
     public void esperarycruzar(Child nino) throws InterruptedException {
-
         lock.lock();
         try {
-            
+            // Barrera de Apagón
             while (sistema.hayApagon) {
                 esperagrupo.await();
             }
 
-            
+            // Formación de grupo (Barrera de tamaño)
             ninosesperandoGrupo++;
-           System.out.println(nino.getNinoId() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
-            
             if (ninosesperandoGrupo < tamanoGrupo) {
                 esperagrupo.await(); 
             } else {
@@ -51,20 +48,18 @@ public class Portal {
                 esperagrupo.signalAll(); 
             }
 
-            
+            // Antes de cruzar, esperamos a que no haya NADIE regresando
             while (ninosregresando > 0) {
                 esperaretorno.await();
             }
-        } catch (Exception e) {
-            System.out.println("Something went wrong.");
         } finally {
-            lock.unlock(); // Si ocurre una excepción el Lock se queda lockeado
+            lock.unlock();
         }
 
-       
+        // Cruce físico (Solo uno a la vez)
         pasounico.acquire(); 
         try {
-            System.out.println(nino.getNinoId() + " está cruzando el portal " + nombre);
+            System.out.println(nino.getNinoId() + " cruzando al Upside Down por " + nombre);
             Thread.sleep(1000); 
         } finally {
             pasounico.release();
@@ -72,6 +67,7 @@ public class Portal {
     }
 
     public void regresaraHawkins(Child nino) throws InterruptedException {
+        //Marcamos que hay alguien queriendo volver (bloquea a los que quieren entrar)
         lock.lock();
         try {
             ninosregresando++;
@@ -79,14 +75,15 @@ public class Portal {
             lock.unlock();
         }
 
-        
+        // 2. Cruce físico con prioridad
         pasounico.acquire();
         try {
-            System.out.println(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
+            System.out.println(nino.getNinoId() + " REGRESA con prioridad por " + nombre);
             Thread.sleep(1000);
         } finally {
             pasounico.release();
-            
+
+            // Al terminar, restamos y avisamos a los que esperan para entrar
             lock.lock();
             try {
                 ninosregresando--;

@@ -210,12 +210,15 @@ public class Sistemageneral {
     }
     
     private void ejecutar_evento(int tipo) throws InterruptedException {
+        java.util.Random rnd = new java.util.Random();
+        long duracion = 5000 + rnd.nextInt(5001);
+        
         switch (tipo) {
             case 0: // APAGÓN
                 logger.log("EVENTO GLOBAL: Apagón del Laboratorio iniciado");
                 System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
                 this.hayApagon = true; // Bloquea portales y movimiento de bichos
-                Thread.sleep(10000);   
+                Thread.sleep(duracion);   
                 this.hayApagon = false;
                 despertar_portales();   // Notifica a los niños que esperaban
                 logger.log("EVENTO GLOBAL: Apagón del Laboratorio finalizado");
@@ -226,7 +229,7 @@ public class Sistemageneral {
                 logger.log("EVENTO GLOBAL: Tormenta del Upside Down iniciada");
                 System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
                 this.setTormentaActiva(true); // Duplica recolección y velocidad de bicho
-                Thread.sleep(15000);
+                Thread.sleep(duracion);
                 this.setTormentaActiva(false);
                 logger.log("EVENTO GLOBAL: Tormenta del Upside Down finalizada");
                 System.out.println("Tormenta finalizada");
@@ -251,7 +254,7 @@ public class Sistemageneral {
                 }
                 logger.log("Eleven ha usado " + sangre + " unidades de sangre para rescatar a " + rescatados + " niños");
                 System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
-                Thread.sleep(5000); // Duración de la parálisis
+                Thread.sleep(duracion); // Duración de la parálisis
                 this.eleveen_enfadada = false;
                 logger.log("EVENTO GLOBAL: Intervención de Eleven finalizada");
                 break;
@@ -260,7 +263,7 @@ public class Sistemageneral {
                 logger.log("EVENTO GLOBAL: Red Mental conectada");
                 System.out.println("EVENTO: LA RED MENTAL");
                 this.red_mental_on = true; // Demogorgons van a la zona con más niños
-                Thread.sleep(12000);
+                Thread.sleep(duracion);
                 this.red_mental_on = false;
                 logger.log("EVENTO GLOBAL: Red Mental desconectada");
                 System.out.println("Red mental desconectada");

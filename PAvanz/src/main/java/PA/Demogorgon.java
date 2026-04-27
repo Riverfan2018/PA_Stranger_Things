@@ -92,8 +92,7 @@ public class Demogorgon extends Thread{
         Thread.sleep(tiempo_pelea);
 
         // a ver si tengo punteria (1/3 de exito)
-        if (Math.random() < (1.0 / 3.0)) {
-            // ¡pa la saca!
+        if (Math.random() < 0.33) { 
             if (zonaactual.capturarnino(victima) != null) {
                 secuestrar(victima);
             }

@@ -9,7 +9,8 @@ public class Portal {
     private final int tamanoGrupo; //La verdad lo quisiera llamar size, :(
     private final Zona zonadestino;
     private final Sistemageneral sistema;
-
+    private final Logger logger;
+    
     private int ninosesperandoGrupo = 0;
    
     private final ReentrantLock lock = new ReentrantLock(true);
@@ -28,6 +29,7 @@ public class Portal {
         this.tamanoGrupo = tamanogrupo;
         this.zonadestino = destino;
         this.sistema = sistema;
+        this.logger = Logger.getInstance();
     }
     
     //
@@ -42,7 +44,8 @@ public class Portal {
 
             
             ninosesperandoGrupo++;
-           System.out.println(nino.getNinoId() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
+            logger.log(nino.getNinoId() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
+            System.out.println(nino.getNinoId() + " espera grupo en portal " + nombre + " (" + ninosesperandoGrupo + "/" + tamanoGrupo + ")");
             
             if (ninosesperandoGrupo < tamanoGrupo) {
                 esperagrupo.await(); 
@@ -56,6 +59,7 @@ public class Portal {
                 esperaretorno.await();
             }
         } catch (Exception e) {
+            logger.log("Error en portal " + nombre + ": " + e.getMessage());
             System.out.println("Something went wrong.");
         } finally {
             lock.unlock(); // Si ocurre una excepción el Lock se queda lockeado
@@ -64,6 +68,7 @@ public class Portal {
        
         pasounico.acquire(); 
         try {
+            logger.log(nino.getNinoId() + " está cruzando el portal " + nombre);
             System.out.println(nino.getNinoId() + " está cruzando el portal " + nombre);
             Thread.sleep(1000); 
         } finally {
@@ -82,6 +87,7 @@ public class Portal {
         
         pasounico.acquire();
         try {
+            logger.log(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
             System.out.println(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
             Thread.sleep(1000);
         } finally {

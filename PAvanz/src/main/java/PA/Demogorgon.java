@@ -5,11 +5,13 @@ public class Demogorgon extends Thread{
     private final Sistemageneral sistema;
     private Zona zonaactual;
     private int contadorCapturas;
+    private final Logger logger;
     
     public Demogorgon(String id, Sistemageneral sistema) {
         this.id = id;
         this.sistema = sistema;
         this.contadorCapturas = 0;
+        this.logger = Logger.getInstance();
         Zona[] zonasUD = {
             sistema.bosque,
             sistema.laboratorio,
@@ -18,6 +20,7 @@ public class Demogorgon extends Thread{
         }; // Hacer ruleta para ver donde empiezan a spawniar
         int index = (int) (Math.random() * zonasUD.length);
         this.zonaactual = zonasUD[index];
+        logger.log(id + " ha aparecido en " + zonaactual.getTipo());
     }
     
     // Getters :-)
@@ -52,6 +55,7 @@ public class Demogorgon extends Thread{
                     darle_caña(victima);
                 } else {
                     // aqui no hay ni un alma, me echo una siesta
+                    logger.log(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
                     System.out.println(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
                     Thread.sleep((long) (4000 + Math.random() * 1000));
                 }
@@ -60,6 +64,7 @@ public class Demogorgon extends Thread{
                 patear_calle();
 
             } catch (InterruptedException e) {
+                logger.log(id + " ha sido borrado del mapa.");
                 System.out.println(id + " ha sido borrado del mapa.");
                 break;
             }
@@ -82,6 +87,7 @@ public class Demogorgon extends Thread{
             tiempo_pelea /= 2;
         }
 
+        logger.log(id + " ataca al niño " + victima.getNinoId() + " (capturas: " + contadorCapturas + ") en " + zonaactual.getTipo());
         System.out.println(id + " zurrando a " + victima.getNinoId() + " en " + zonaactual.getTipo());
         Thread.sleep(tiempo_pelea);
 
@@ -92,12 +98,14 @@ public class Demogorgon extends Thread{
                 secuestrar(victima);
             }
         } else {
+            logger.log(id + " ha fallado el ataque contra " + victima.getNinoId());
             System.out.println(id + " es un manco y ha fallado contra " + victima.getNinoId());
         }
     }
 
     private void secuestrar(Child victima) throws InterruptedException {
         // lo llevo al zulo (la colmena)
+        logger.log("El niño " + victima.getNinoId() + " ha sido capturado");
         sistema.colmena.entrar(victima);
         victima.setcapturado(true); 
 

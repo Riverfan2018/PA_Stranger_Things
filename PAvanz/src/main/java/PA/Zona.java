@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Zona {
     private final List<Child> ninosPresentes;
     private final ReentrantLock lock;
+    private final Logger logger;
     
     public enum TipoZona {
         CALLE_PRINCIPAL,
@@ -26,6 +27,7 @@ public class Zona {
         this.tipo = tipo;
         this.ninosPresentes = new ArrayList<>();
         this.lock = new ReentrantLock(true);
+        this.logger = Logger.getInstance();
     }
     
     // Funcion niño entrar isla???
@@ -33,6 +35,7 @@ public class Zona {
         lock.lock();
         try {
             ninosPresentes.add(nino);
+            logger.log(nino.getNinoId() + " ha entrado a " + tipo);
             System.out.println(nino.getNinoId() + " ha entrado a " + tipo);
         } finally {
             lock.unlock();
@@ -44,6 +47,7 @@ public class Zona {
         lock.lock();
         try {
             ninosPresentes.remove(nino);
+            logger.log(nino.getNinoId() + " ha salido de " + tipo);
             System.out.println(nino.getNinoId() + " ha salido de " + tipo);
         } finally {
             lock.unlock();
@@ -76,6 +80,7 @@ public class Zona {
         lock.lock();
         try {
             if (ninosPresentes.remove(nino)) {
+                logger.log(nino.getNinoId() + " ha sido capturado de " + tipo);
                 System.out.println(nino.getNinoId() + " ha sido capturado de " + tipo);
                 return nino;
             }

@@ -7,10 +7,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Colmena {
     private final List<Child> ninosCapturados;
     private final ReentrantLock lock;
+    private final Logger logger;
     
     public Colmena() {
         this.ninosCapturados = new ArrayList<>();
         this.lock = new ReentrantLock(true);
+        this.logger = Logger.getInstance();
     }
     
     // Traer niño a la party
@@ -18,6 +20,7 @@ public class Colmena {
         lock.lock();
         try {
             ninosCapturados.add(nino);
+            logger.log(nino.getNinoId() + " ha sido depositado en la Colmena");
             System.out.println(nino.getNinoId() + " ha sido depositado en la Colmena");
         } finally {
             lock.unlock();
@@ -29,6 +32,7 @@ public class Colmena {
         lock.lock();
         try {
             ninosCapturados.remove(nino);
+            logger.log(nino.getNinoId() + " ha salido de la Colmena");
             System.out.println(nino.getNinoId() + " ha salido de la Colmena");
         } finally {
             lock.unlock();

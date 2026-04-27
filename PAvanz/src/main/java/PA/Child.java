@@ -5,10 +5,12 @@ public class Child extends Thread{
     private final String id;
     private final Sistemageneral sistema;
     private boolean capturado = false;
+    private final Logger logger;
     
     public Child(String id, Sistemageneral sistema) {
         this.id = id;
         this.sistema = sistema;
+        this.logger = Logger.getInstance();
     }
 
     @Override
@@ -21,6 +23,7 @@ public class Child extends Thread{
  
                 sistema.callePrincipal.salir(this);
                 sistema.sotanoByers.entrar(this);
+                logger.log(id + " ha entrado al Sótano Byers.");
                 System.out.println(id + " ha entrado al Sótano Byers.");
                 Thread.sleep(random(1000, 2000));
                 
@@ -33,6 +36,7 @@ public class Child extends Thread{
 
                 Zona zonaUD = portal.getZonaDestino();
                 zonaUD.entrar(this);
+                logger.log(id + " ha llegado a " + zonaUD.getTipo());
                 System.out.println(id + " ha llegado a " + zonaUD.getTipo());
 
                 
@@ -44,7 +48,9 @@ public class Child extends Thread{
 
                 if (!this.capturado) {
 
+                    logger.log(id + " regresa con sangre de Vecna.");
                     System.out.println(id + " regresa con sangre de Vecna.");
+                    sistema.sumar_sangre();
                     zonaUD.salir(this);
                     portal.regresaraHawkins(this);
                     
@@ -81,7 +87,10 @@ public class Child extends Thread{
 
     public synchronized void setcapturado(boolean estado) {
         this.capturado = estado;
-        if (!estado) notifyAll(); 
+        if (!estado) {
+            notifyAll();
+            logger.log(id + " ha sido rescatado de la Colmena");
+        } 
     }
 
     private long random(int min, int max) {

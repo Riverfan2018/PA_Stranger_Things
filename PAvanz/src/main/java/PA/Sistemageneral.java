@@ -37,6 +37,8 @@ public class Sistemageneral {
     
     private final List<Demogorgon> demogorgons;
     
+    private final Logger logger;
+    
     public Sistemageneral() {
         
         
@@ -60,6 +62,7 @@ public class Sistemageneral {
         
         demogorgons = new ArrayList<>();
         
+        this.logger = Logger.getInstance();
     }
     
     public Portal seleccionarPortalAleatorio() {
@@ -172,6 +175,7 @@ public class Sistemageneral {
             Demogorgon nuevo = new Demogorgon(id_nuevo, this);
             demogorgons.add(nuevo);
             nuevo.start();
+            logger.log("VECNA HA ENVIADO A: " + id_nuevo);
             System.out.println("VECNA HA ENVIADO A: " + id_nuevo);
         }
     }
@@ -190,6 +194,7 @@ public class Sistemageneral {
                 try {
                     //Espera aleatoria de 30 a 60 segundos
                     long espera = 30000 + rnd.nextInt(30001);
+                    logger.log("Próximo evento en " + (espera / 1000) + " segundos");
                     System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
                     Thread.sleep(espera);
 
@@ -207,23 +212,28 @@ public class Sistemageneral {
     private void ejecutar_evento(int tipo) throws InterruptedException {
         switch (tipo) {
             case 0: // APAGÓN
+                logger.log("EVENTO GLOBAL: Apagón del Laboratorio iniciado");
                 System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
                 this.hayApagon = true; // Bloquea portales y movimiento de bichos
                 Thread.sleep(10000);   
                 this.hayApagon = false;
                 despertar_portales();   // Notifica a los niños que esperaban
+                logger.log("EVENTO GLOBAL: Apagón del Laboratorio finalizado");
                 System.out.println("Apagón finalizado");
                 break;
 
             case 1: // TORMENTA
+                logger.log("EVENTO GLOBAL: Tormenta del Upside Down iniciada");
                 System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
                 this.setTormentaActiva(true); // Duplica recolección y velocidad de bicho
                 Thread.sleep(15000);
                 this.setTormentaActiva(false);
+                logger.log("EVENTO GLOBAL: Tormenta del Upside Down finalizada");
                 System.out.println("Tormenta finalizada");
                 break;
 
             case 2: // ELEVEN
+                logger.log("EVENTO GLOBAL: Intervención de Eleven iniciada");
                 System.out.println("EVENTO: INTERVENCIÓN DE ELEVEN");
                 this.eleveen_enfadada = true; // Paraliza demogorgons
 
@@ -239,16 +249,20 @@ public class Sistemageneral {
                         rescatados++;
                     }
                 }
+                logger.log("Eleven ha usado " + sangre + " unidades de sangre para rescatar a " + rescatados + " niños");
                 System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
                 Thread.sleep(5000); // Duración de la parálisis
                 this.eleveen_enfadada = false;
+                logger.log("EVENTO GLOBAL: Intervención de Eleven finalizada");
                 break;
 
             case 3: // RED MENTAL
+                logger.log("EVENTO GLOBAL: Red Mental conectada");
                 System.out.println("EVENTO: LA RED MENTAL");
                 this.red_mental_on = true; // Demogorgons van a la zona con más niños
                 Thread.sleep(12000);
                 this.red_mental_on = false;
+                logger.log("EVENTO GLOBAL: Red Mental desconectada");
                 System.out.println("Red mental desconectada");
                 break;
         }

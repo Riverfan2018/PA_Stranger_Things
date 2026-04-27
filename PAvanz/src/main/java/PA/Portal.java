@@ -102,4 +102,13 @@ public class Portal {
     public Zona getZonaDestino() {
         return zonadestino;
     }
+    
+    public void despertarPorLuz() {
+    lock.lock();
+    try {
+        esperagrupo.signalAll();
+    } finally {
+        lock.unlock();
+    }
+}
 }

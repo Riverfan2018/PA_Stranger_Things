@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Sistemageneral {
     private final java.util.concurrent.atomic.AtomicInteger total_capturas = new java.util.concurrent.atomic.AtomicInteger(0);
+    private final java.util.concurrent.atomic.AtomicInteger sangre_total = new java.util.concurrent.atomic.AtomicInteger(0);
     
     public final Zona colmena;
     
@@ -80,24 +81,41 @@ public class Sistemageneral {
     public void agregarDemogorgon(Demogorgon d) {
         demogorgons.add(d); // The big Dih
     }
+    
+    public void setHayApagon(boolean estado) {
+        this.hayApagon = estado;
+        if (!estado) {
+            //Hay que avisar a los portales que la luz ha vuelto
+            portalBosque.despertarPorLuz();
+            portalLaboratorio.despertarPorLuz();
+            portalCentroComercial.despertarPorLuz();
+            portalAlcantarillado.despertarPorLuz();
+        }
+    }
     public void eleveen() {
-        
         this.eleveen_enfadada = true;
-        System.out.println("¡Eleven está usando sus poderes! Los bichos se han quedado tiesos.");
+        System.out.println("¡La cria con poderes está rara! Los bichos se han quedado tiesos.");
 
         int rescatados = 0;
         while (colmena.hayNinos()) {
             Child chavalito = colmena.seleccionarninoaleatorio();
             if (chavalito != null) {
-                colmena.salir(chavalito);      // Sale de la colmena
-                chavalito.setcapturado(false);  // Se despierta (hace el notifyAll)
-                callePrincipal.entrar(chavalito); // Vuelve a la civilización
+                colmena.salir(chavalito);      
+                chavalito.setcapturado(false); 
+                callePrincipal.entrar(chavalito); 
                 rescatados++;
             }
         }
-        
         System.out.println("Eleven ha rescatado a " + rescatados + " chavales.");
 
+        // Hilo temporal para que Eleven duré 5 s
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000); 
+                this.eleveen_enfadada = false;
+                System.out.println("Eleven se ha cansado. Los Demogorgons vuelven a la caza...");
+            } catch (InterruptedException e) { e.printStackTrace(); }
+        }).start();
     }
     
     // Método para iniciar el sistema (crear niños escalonados y demogorgon alpha Auuuuu!)
@@ -154,6 +172,92 @@ public class Sistemageneral {
             nuevo.start();
             System.out.println("VECNA HA ENVIADO A: " + id_nuevo);
         }
+    }
+    public void sumar_sangre() {
+        sangre_total.incrementAndGet();
+    }
+
+    public int get_sangre_recolectada() {
+        return sangre_total.get(); 
+    }
+    
+    public void lanzar_ciclo_eventos() {
+        Thread gestor = new Thread(() -> {
+            java.util.Random rnd = new java.util.Random();
+            while (true) {
+                try {
+                    //Espera aleatoria de 30 a 60 segundos
+                    long espera = 30000 + rnd.nextInt(30001);
+                    System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
+                    Thread.sleep(espera);
+
+                    // Elegir evento (0: Apagón, 1: Tormenta, 2: Eleven, 3: Red Mental)
+                    int evento = rnd.nextInt(4);
+                    ejecutar_evento(evento);
+
+                } catch (InterruptedException e) { break; }
+            }
+        });
+        gestor.setDaemon(true);
+        gestor.start();
+    }
+    
+    private void ejecutar_evento(int tipo) throws InterruptedException {
+        switch (tipo) {
+            case 0: // APAGÓN
+                System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
+                this.hayApagon = true; // Bloquea portales y movimiento de bichos
+                Thread.sleep(10000);   
+                this.hayApagon = false;
+                despertar_portales();   // Notifica a los niños que esperaban
+                System.out.println("Apagón finalizado");
+                break;
+
+            case 1: // TORMENTA
+                System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
+                this.setTormentaActiva(true); // Duplica recolección y velocidad de bicho
+                Thread.sleep(15000);
+                this.setTormentaActiva(false);
+                System.out.println("Tormenta finalizada");
+                break;
+
+            case 2: // ELEVEN
+                System.out.println("EVENTO: INTERVENCIÓN DE ELEVEN");
+                this.eleveen_enfadada = true; // Paraliza demogorgons
+
+                // Liberar niños según sangre 
+                int sangre = get_sangre_recolectada(); 
+                int rescatados = 0;
+                for (int i = 0; i < sangre && colmena.hayNinos(); i++) {
+                    Child c = colmena.seleccionarninoaleatorio();
+                    if (c != null) {
+                        colmena.salir(c);
+                        c.setcapturado(false);
+                        callePrincipal.entrar(c);
+                        rescatados++;
+                    }
+                }
+                System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
+                Thread.sleep(5000); // Duración de la parálisis
+                this.eleveen_enfadada = false;
+                break;
+
+            case 3: // RED MENTAL
+                System.out.println("EVENTO: LA RED MENTAL");
+                this.red_mental_on = true; // Demogorgons van a la zona con más niños
+                Thread.sleep(12000);
+                this.red_mental_on = false;
+                System.out.println("Red mental desconectada");
+                break;
+        }
+    }
+
+    // Función auxiliar para despertar a los niños que esperan en portales
+    private void despertar_portales() {
+        portalBosque.despertarPorLuz();
+        portalLaboratorio.despertarPorLuz();
+        portalCentroComercial.despertarPorLuz();
+        portalAlcantarillado.despertarPorLuz();
     }
 
     

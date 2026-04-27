@@ -61,7 +61,7 @@ public class Zona {
     }
     
     // Para que Daddy Demogorgon se lleve un niño ramdom
-    public Child seleccionarninoaleatorio() {
+    public Child seleccionarNinoAleatorio() {
         lock.lock();
         try {
             if (ninosPresentes.isEmpty()) return null;
@@ -118,7 +118,7 @@ public class Zona {
 
     public boolean esZonaUpsideDown() {
         return tipo == TipoZona.BOSQUE || 
-               tipo == TipoZona.LABORATORIO || 
+               tipo == TipoZona.LABORATORIO ||
                tipo == TipoZona.CENTRO_COMERCIAL || 
                tipo == TipoZona.ALCANTARILLADO;
     }

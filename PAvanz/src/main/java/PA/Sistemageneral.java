@@ -8,7 +8,7 @@ public class Sistemageneral {
     private final java.util.concurrent.atomic.AtomicInteger total_capturas = new java.util.concurrent.atomic.AtomicInteger(0);
     private final java.util.concurrent.atomic.AtomicInteger sangre_total = new java.util.concurrent.atomic.AtomicInteger(0);
     
-    public final Zona colmena;
+    public final Colmena colmena;
     
     public volatile boolean red_mental_on = false;
     
@@ -56,6 +56,8 @@ public class Sistemageneral {
         portalCentroComercial = new Portal("Centro Comercial", 4, centroComercial, this);
         portalAlcantarillado = new Portal("Alcantarillado", 2, alcantarillado, this);
         
+        this.colmena = new Colmena();
+        
         demogorgons = new ArrayList<>();
         
     }
@@ -98,7 +100,7 @@ public class Sistemageneral {
 
         int rescatados = 0;
         while (colmena.hayNinos()) {
-            Child chavalito = colmena.seleccionarninoaleatorio();
+            Child chavalito = colmena.seleccionarNinoAleatorio();
             if (chavalito != null) {
                 colmena.salir(chavalito);      
                 chavalito.setcapturado(false); 
@@ -229,7 +231,7 @@ public class Sistemageneral {
                 int sangre = get_sangre_recolectada(); 
                 int rescatados = 0;
                 for (int i = 0; i < sangre && colmena.hayNinos(); i++) {
-                    Child c = colmena.seleccionarninoaleatorio();
+                    Child c = colmena.seleccionarNinoAleatorio();
                     if (c != null) {
                         colmena.salir(c);
                         c.setcapturado(false);

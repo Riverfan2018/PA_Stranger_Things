@@ -45,7 +45,7 @@ public class Demogorgon extends Thread{
                 chequear_paralisis();
 
                 // a ver si hay alguna merienda cerca
-                Child victima = zonaactual.seleccionarninoaleatorio();
+                Child victima = zonaactual.seleccionarNinoAleatorio();
 
                 if (victima != null) {
                     // se viene pelea

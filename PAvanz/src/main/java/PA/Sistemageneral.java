@@ -283,6 +283,9 @@ public class Sistemageneral {
         portalAlcantarillado.despertarPorLuz();
     }
 
-    
+    public Portal getPortalBosque() { return portalBosque; }
+    public Portal getPortalLaboratorio() { return portalLaboratorio; }
+    public Portal getPortalCentroComercial() { return portalCentroComercial; }
+    public Portal getPortalAlcantarillado() { return portalAlcantarillado; }
     
 }

@@ -1,9 +1,7 @@
 package PA;
 
-/**
- *
- * @author lukal
- */
+import java.util.List;
+
 public class GUI extends javax.swing.JFrame {
     
     // ==================== CÓDIGO MANUAL ====================
@@ -73,9 +71,44 @@ public class GUI extends javax.swing.JFrame {
         
         // Colmena
         mostrarNinosEnColmena();
+        
+        mostrarPortales();
     }
     
     // ==================== FIN CÓDIGO MANUAL ====================
+    
+    private void mostrarPortales() {
+        // PORTAL BOSQUE - Obtener los portales a través de sistema
+        Portal portalBosque = sistema.getPortalBosque();
+        Portal portalLaboratorio = sistema.getPortalLaboratorio();
+        Portal portalCentroComercial = sistema.getPortalCentroComercial();
+        Portal portalAlcantarillado = sistema.getPortalAlcantarillado();
+
+        // PORTAL BOSQUE
+        mostrarNiñosEnCola(portalBosque.getNinosEsperandoSalida(), txtPortalBosqueSalida, "→ UD");
+        mostrarNiñosEnCola(portalBosque.getNinosEsperandoRegreso(), txtPortalBosqueRegreso, "→ HWK");
+
+        // PORTAL LABORATORIO
+        mostrarNiñosEnCola(portalLaboratorio.getNinosEsperandoSalida(), txtPortalLaboratorioSalida, "→ UD");
+        mostrarNiñosEnCola(portalLaboratorio.getNinosEsperandoRegreso(), txtPortalLaboratorioRegreso, "→ HWK");
+
+        // PORTAL CENTRO COMERCIAL
+        mostrarNiñosEnCola(portalCentroComercial.getNinosEsperandoSalida(), txtPortalCentroSalida, "→ UD");
+        mostrarNiñosEnCola(portalCentroComercial.getNinosEsperandoRegreso(), txtPortalCentroRegreso, "→ HWK");
+
+        // PORTAL ALCANTARILLADO
+        mostrarNiñosEnCola(portalAlcantarillado.getNinosEsperandoSalida(), txtPortalAlcantarilladoSalida, "→ UD");
+        mostrarNiñosEnCola(portalAlcantarillado.getNinosEsperandoRegreso(), txtPortalAlcantarilladoRegreso, "→ HWK");
+    }
+    
+    private void mostrarNiñosEnCola(List<Child> ninos, javax.swing.JTextArea textArea, String direccion) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[").append(direccion).append("]\n");
+        for (Child nino : ninos) {
+            sb.append(nino.getNinoId()).append("\n");
+        }
+        textArea.setText(sb.toString());
+    }
     
     private void mostrarNinosEnZona(Zona zona, javax.swing.JTextArea textArea) {
         StringBuilder sb = new StringBuilder();
@@ -135,21 +168,21 @@ public class GUI extends javax.swing.JFrame {
         jPanel21 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTextArea6 = new javax.swing.JTextArea();
+        txtPortalLaboratorioSalida = new javax.swing.JTextArea();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
+        txtPortalBosqueRegreso = new javax.swing.JTextArea();
         jScrollPane10 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        txtPortalBosqueSalida = new javax.swing.JTextArea();
         jScrollPane11 = new javax.swing.JScrollPane();
-        jTextArea7 = new javax.swing.JTextArea();
+        txtPortalLaboratorioRegreso = new javax.swing.JTextArea();
         jScrollPane12 = new javax.swing.JScrollPane();
-        jTextArea8 = new javax.swing.JTextArea();
+        txtPortalCentroSalida = new javax.swing.JTextArea();
         jScrollPane13 = new javax.swing.JScrollPane();
-        jTextArea9 = new javax.swing.JTextArea();
+        txtPortalCentroRegreso = new javax.swing.JTextArea();
         jScrollPane14 = new javax.swing.JScrollPane();
-        jTextArea10 = new javax.swing.JTextArea();
+        txtPortalAlcantarilladoSalida = new javax.swing.JTextArea();
         jScrollPane15 = new javax.swing.JScrollPane();
-        jTextArea11 = new javax.swing.JTextArea();
+        txtPortalAlcantarilladoRegreso = new javax.swing.JTextArea();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
@@ -383,37 +416,37 @@ public class GUI extends javax.swing.JFrame {
             .addGap(0, 24, Short.MAX_VALUE)
         );
 
-        jTextArea6.setColumns(20);
-        jTextArea6.setRows(5);
-        jScrollPane8.setViewportView(jTextArea6);
+        txtPortalLaboratorioSalida.setColumns(20);
+        txtPortalLaboratorioSalida.setRows(5);
+        jScrollPane8.setViewportView(txtPortalLaboratorioSalida);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane9.setViewportView(jTextArea3);
+        txtPortalBosqueRegreso.setColumns(20);
+        txtPortalBosqueRegreso.setRows(5);
+        jScrollPane9.setViewportView(txtPortalBosqueRegreso);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane10.setViewportView(jTextArea2);
+        txtPortalBosqueSalida.setColumns(20);
+        txtPortalBosqueSalida.setRows(5);
+        jScrollPane10.setViewportView(txtPortalBosqueSalida);
 
-        jTextArea7.setColumns(20);
-        jTextArea7.setRows(5);
-        jScrollPane11.setViewportView(jTextArea7);
+        txtPortalLaboratorioRegreso.setColumns(20);
+        txtPortalLaboratorioRegreso.setRows(5);
+        jScrollPane11.setViewportView(txtPortalLaboratorioRegreso);
 
-        jTextArea8.setColumns(20);
-        jTextArea8.setRows(5);
-        jScrollPane12.setViewportView(jTextArea8);
+        txtPortalCentroSalida.setColumns(20);
+        txtPortalCentroSalida.setRows(5);
+        jScrollPane12.setViewportView(txtPortalCentroSalida);
 
-        jTextArea9.setColumns(20);
-        jTextArea9.setRows(5);
-        jScrollPane13.setViewportView(jTextArea9);
+        txtPortalCentroRegreso.setColumns(20);
+        txtPortalCentroRegreso.setRows(5);
+        jScrollPane13.setViewportView(txtPortalCentroRegreso);
 
-        jTextArea10.setColumns(20);
-        jTextArea10.setRows(5);
-        jScrollPane14.setViewportView(jTextArea10);
+        txtPortalAlcantarilladoSalida.setColumns(20);
+        txtPortalAlcantarilladoSalida.setRows(5);
+        jScrollPane14.setViewportView(txtPortalAlcantarilladoSalida);
 
-        jTextArea11.setColumns(20);
-        jTextArea11.setRows(5);
-        jScrollPane15.setViewportView(jTextArea11);
+        txtPortalAlcantarilladoRegreso.setColumns(20);
+        txtPortalAlcantarilladoRegreso.setRows(5);
+        jScrollPane15.setViewportView(txtPortalAlcantarilladoRegreso);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -505,10 +538,10 @@ public class GUI extends javax.swing.JFrame {
         jPanel22.setLayout(jPanel22Layout);
         jPanel22Layout.setHorizontalGroup(
             jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel22Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel22Layout.setVerticalGroup(
             jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -527,10 +560,10 @@ public class GUI extends javax.swing.JFrame {
         jPanel23.setLayout(jPanel23Layout);
         jPanel23Layout.setHorizontalGroup(
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel23Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel23Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel23Layout.setVerticalGroup(
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -549,10 +582,10 @@ public class GUI extends javax.swing.JFrame {
         jPanel24.setLayout(jPanel24Layout);
         jPanel24Layout.setHorizontalGroup(
             jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel24Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel24Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel24Layout.setVerticalGroup(
             jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -571,10 +604,10 @@ public class GUI extends javax.swing.JFrame {
         jPanel25.setLayout(jPanel25Layout);
         jPanel25Layout.setHorizontalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel25Layout.createSequentialGroup()
-                .addContainerGap(90, Short.MAX_VALUE)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         jPanel25Layout.setVerticalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -771,21 +804,21 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTextArea jTextArea10;
-    private javax.swing.JTextArea jTextArea11;
     private javax.swing.JTextArea jTextArea16;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea6;
-    private javax.swing.JTextArea jTextArea7;
-    private javax.swing.JTextArea jTextArea8;
-    private javax.swing.JTextArea jTextArea9;
     private javax.swing.JTextArea txtAlcantarillado;
     private javax.swing.JTextArea txtBosque;
     private javax.swing.JTextArea txtCallePrincipal;
     private javax.swing.JTextArea txtCentroComercial;
     private javax.swing.JTextArea txtColmena;
     private javax.swing.JTextArea txtLaboratorio;
+    private javax.swing.JTextArea txtPortalAlcantarilladoRegreso;
+    private javax.swing.JTextArea txtPortalAlcantarilladoSalida;
+    private javax.swing.JTextArea txtPortalBosqueRegreso;
+    private javax.swing.JTextArea txtPortalBosqueSalida;
+    private javax.swing.JTextArea txtPortalCentroRegreso;
+    private javax.swing.JTextArea txtPortalCentroSalida;
+    private javax.swing.JTextArea txtPortalLaboratorioRegreso;
+    private javax.swing.JTextArea txtPortalLaboratorioSalida;
     private javax.swing.JTextArea txtRadioWSQK;
     private javax.swing.JTextArea txtSotanoByers;
     // End of variables declaration//GEN-END:variables

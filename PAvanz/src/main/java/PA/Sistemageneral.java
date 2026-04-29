@@ -87,6 +87,10 @@ public class Sistemageneral {
         demogorgons.add(d); // The big Dih
     }
     
+    public List<Demogorgon> getDemogorgons() {
+        return new ArrayList<>(demogorgons);
+    }
+    
     public void setHayApagon(boolean estado) {
         this.hayApagon = estado;
         if (!estado) {

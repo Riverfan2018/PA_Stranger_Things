@@ -7,6 +7,12 @@ public class Main {
         
         Logger.getInstance().log("=== LA BATALLA YA HA EMPEZADO ===");
         System.out.println("La simulación comienza");
+        
+        java.awt.EventQueue.invokeLater(() -> {
+            GUI gui = new GUI(sistema);
+            gui.setVisible(true);
+        });
+        
         sistema.iniciar(); 
         sistema.lanzar_ciclo_eventos();
         

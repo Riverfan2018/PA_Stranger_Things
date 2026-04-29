@@ -69,4 +69,13 @@ public class Colmena {
             lock.unlock();
         }
     }
+    
+    public List<Child> getNinosCapturados() {
+    lock.lock();
+    try {
+        return new ArrayList<>(ninosCapturados);
+    } finally {
+        lock.unlock();
+    }
+}
 }

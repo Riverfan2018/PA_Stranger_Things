@@ -32,31 +32,22 @@ public class ModuloRemoto extends javax.swing.JFrame {
             while (true) {
                 try {
                     Thread.sleep(1000);
-                    actualizarEstado();
+                    actualizarTodo();
                 } catch (InterruptedException e) {}
             }
         }).start();
     }
     
-    private void actualizarEstado() {
+    private void actualizarTodo() {
         if (out == null) return;
-        out.println("ESTADO");
-        try {
-            StringBuilder sb = new StringBuilder();
-            String linea;
-            while ((linea = in.readLine()) != null) {
-                if (linea.isEmpty()) break;
-                sb.append(linea).append("\n");
-            }
-            // Actualizar tu área de texto
-            // areaEstado.setText(sb.toString());
-        } catch (IOException e) {}
+
+        DemogorgonDelMes();
     }
     
     private void enviarComando(String comando) {
         if (out != null) {
             out.println(comando);
-            actualizarEstado();
+            actualizarTodo();
         }
     }
     
@@ -80,6 +71,24 @@ public class ModuloRemoto extends javax.swing.JFrame {
             System.out.println("No conectado al servidor");
         }
     }
+    
+    private void DemogorgonDelMes() {
+        if (out == null) return;
+        out.println("RANKING");
+        try {
+            StringBuilder sb = new StringBuilder();
+            String linea;
+            // Leer hasta línea vacía (fin del mensaje)
+            while ((linea = in.readLine()) != null) {
+                if (linea.isEmpty()) break;
+                sb.append(linea).append("\n");
+            }
+            txtRanking.setText(sb.toString());
+        } catch (IOException e) {
+            txtRanking.setText("Error al obtener ranking");
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,6 +103,9 @@ public class ModuloRemoto extends javax.swing.JFrame {
         PanelEstadoPortales = new javax.swing.JPanel();
         PanelEstadoUD = new javax.swing.JPanel();
         PanelRankingDemogorgones = new javax.swing.JPanel();
+        ScrollPanelRanking = new javax.swing.JScrollPane();
+        txtRanking = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
         PanelEvento = new javax.swing.JPanel();
         LabelModuloRemoto = new javax.swing.JLabel();
         btnPausa = new javax.swing.JButton();
@@ -128,22 +140,40 @@ public class ModuloRemoto extends javax.swing.JFrame {
         PanelEstadoUD.setLayout(PanelEstadoUDLayout);
         PanelEstadoUDLayout.setHorizontalGroup(
             PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 350, Short.MAX_VALUE)
         );
         PanelEstadoUDLayout.setVerticalGroup(
             PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 354, Short.MAX_VALUE)
         );
 
+        txtRanking.setColumns(10);
+        txtRanking.setRows(5);
+        ScrollPanelRanking.setViewportView(txtRanking);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Ranking Demogorgones");
+
         javax.swing.GroupLayout PanelRankingDemogorgonesLayout = new javax.swing.GroupLayout(PanelRankingDemogorgones);
         PanelRankingDemogorgones.setLayout(PanelRankingDemogorgonesLayout);
         PanelRankingDemogorgonesLayout.setHorizontalGroup(
             PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 202, Short.MAX_VALUE)
+            .addGroup(PanelRankingDemogorgonesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ScrollPanelRanking)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                .addContainerGap())
         );
         PanelRankingDemogorgonesLayout.setVerticalGroup(
             PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRankingDemogorgonesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ScrollPanelRanking, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout PanelEventoLayout = new javax.swing.GroupLayout(PanelEvento);
@@ -157,6 +187,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
             .addGap(0, 250, Short.MAX_VALUE)
         );
 
+        LabelModuloRemoto.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         LabelModuloRemoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabelModuloRemoto.setText("Modulo Remoto");
 
@@ -179,11 +210,10 @@ public class ModuloRemoto extends javax.swing.JFrame {
                     .addComponent(PanelEstadoPortales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PanelResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(PanelEstadoUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE))
-                    .addComponent(btnPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(PanelEstadoUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPausa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PanelRankingDemogorgones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -273,6 +303,9 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private javax.swing.JPanel PanelGeneral;
     private javax.swing.JPanel PanelRankingDemogorgones;
     private javax.swing.JPanel PanelResumenHawkins;
+    private javax.swing.JScrollPane ScrollPanelRanking;
     private javax.swing.JButton btnPausa;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextArea txtRanking;
     // End of variables declaration//GEN-END:variables
 }

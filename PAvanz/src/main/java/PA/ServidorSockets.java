@@ -66,6 +66,8 @@ public class ServidorSockets {
             switch (comando.toUpperCase()) {
                 case "ESTADO":
                     return generarEstado();
+                case "RANKING":  // NUEVO COMANDO
+                    return generarRanking();
                 case "PAUSAR":
                     sistema.pausar();
                     return "SISTEMA PAUSADO";
@@ -73,8 +75,31 @@ public class ServidorSockets {
                     sistema.reanudar();
                     return "SISTEMA REANUDADO";
                 default:
-                    return "COMANDO DESCONOCIDO. Comandos: ESTADO, PAUSAR, REANUDAR, SALIR";
+                    return "COMANDO DESCONOCIDO. Comandos: ESTADO, RANKING, PAUSAR, REANUDAR, SALIR";
             }
+        }
+        
+        private String generarRanking() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("=== TOP 3 DEMOGORGONS ===\n");
+
+            List<Demogorgon> ranking = new ArrayList<>(sistema.getDemogorgons());
+            ranking.sort((a, b) -> Integer.compare(b.getContadorCapturas(), a.getContadorCapturas()));
+
+            for (int i = 0; i < Math.min(3, ranking.size()); i++) {
+                Demogorgon d = ranking.get(i);
+                sb.append((i+1)).append(". ")
+                  .append(d.getDemogorgonId())
+                  .append(" (")
+                  .append(d.getContadorCapturas())
+                  .append(" capturas)\n");
+            }
+
+            if (ranking.isEmpty()) {
+                sb.append("No hay demogorgons activos\n");
+            }
+
+            return sb.toString();
         }
         
         private String generarEstado() {

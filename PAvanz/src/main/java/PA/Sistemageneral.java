@@ -210,11 +210,31 @@ public class Sistemageneral {
             java.util.Random rnd = new java.util.Random();
             while (true) {
                 try {
+                    // Verificar si el sistema está pausado
+                    while (isPausado()) {
+                        synchronized (this) {
+                            this.wait();
+                        }
+                    }
+                    
                     //Espera aleatoria de 30 a 60 segundos
                     long espera = 30000 + rnd.nextInt(30001);
                     logger.log("Próximo evento en " + (espera / 1000) + " segundos");
                     System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
                     Thread.sleep(espera);
+                    
+                    // Espera en intervalos pequeños para verificar pausa
+                    long tiempoRestante = espera;
+                    while (tiempoRestante > 0 && !isPausado()) {
+                        long paso = Math.min(1000, tiempoRestante);
+                        Thread.sleep(paso);
+                        tiempoRestante -= paso;
+                    }
+
+                    // Si se pausó durante la espera, saltar este evento
+                    if (isPausado()) {
+                        continue;
+                    }
 
                     // Elegir evento (0: Apagón, 1: Tormenta, 2: Eleven, 3: Red Mental)
                     int evento = rnd.nextInt(4);
@@ -230,15 +250,31 @@ public class Sistemageneral {
     private void ejecutar_evento(int tipo) throws InterruptedException {
         java.util.Random rnd = new java.util.Random();
         long duracion = 5000 + rnd.nextInt(5001);
-        
+
         switch (tipo) {
             case 0: // APAGÓN
                 logger.log("EVENTO GLOBAL: Apagón del Laboratorio iniciado");
                 System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
-                this.hayApagon = true; // Bloquea portales y movimiento de bichos
-                Thread.sleep(duracion);   
+                this.hayApagon = true;
+
+                // Esperar con verificación de pausa
+                long tiempoRestante = duracion;
+                while (tiempoRestante > 0 && !isPausado()) {
+                    long paso = Math.min(1000, tiempoRestante);
+                    Thread.sleep(paso);
+                    tiempoRestante -= paso;
+                }
+
+                // Si se pausó, al reanudar continuar el evento
+                if (isPausado()) {
+                    // Guardar el tiempo restante y esperar reanudación
+                    synchronized (this) {
+                        this.wait();
+                    }
+                }
+
                 this.hayApagon = false;
-                despertar_portales();   // Notifica a los niños que esperaban
+                despertar_portales();
                 logger.log("EVENTO GLOBAL: Apagón del Laboratorio finalizado");
                 System.out.println("Apagón finalizado");
                 break;
@@ -246,8 +282,21 @@ public class Sistemageneral {
             case 1: // TORMENTA
                 logger.log("EVENTO GLOBAL: Tormenta del Upside Down iniciada");
                 System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
-                this.setTormentaActiva(true); // Duplica recolección y velocidad de bicho
-                Thread.sleep(duracion);
+                this.setTormentaActiva(true);
+
+                tiempoRestante = duracion;
+                while (tiempoRestante > 0 && !isPausado()) {
+                    long paso = Math.min(1000, tiempoRestante);
+                    Thread.sleep(paso);
+                    tiempoRestante -= paso;
+                }
+
+                if (isPausado()) {
+                    synchronized (this) {
+                        this.wait();
+                    }
+                }
+
                 this.setTormentaActiva(false);
                 logger.log("EVENTO GLOBAL: Tormenta del Upside Down finalizada");
                 System.out.println("Tormenta finalizada");
@@ -256,10 +305,9 @@ public class Sistemageneral {
             case 2: // ELEVEN
                 logger.log("EVENTO GLOBAL: Intervención de Eleven iniciada");
                 System.out.println("EVENTO: INTERVENCIÓN DE ELEVEN");
-                this.eleveen_enfadada = true; // Paraliza demogorgons
+                this.eleveen_enfadada = true;
 
-                // Liberar niños según sangre 
-                int sangre = get_sangre_recolectada(); 
+                int sangre = get_sangre_recolectada();
                 int rescatados = 0;
                 for (int i = 0; i < sangre && colmena.hayNinos(); i++) {
                     Child c = colmena.seleccionarNinoAleatorio();
@@ -272,7 +320,20 @@ public class Sistemageneral {
                 }
                 logger.log("Eleven ha usado " + sangre + " unidades de sangre para rescatar a " + rescatados + " niños");
                 System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
-                Thread.sleep(duracion); // Duración de la parálisis
+
+                tiempoRestante = duracion;
+                while (tiempoRestante > 0 && !isPausado()) {
+                    long paso = Math.min(1000, tiempoRestante);
+                    Thread.sleep(paso);
+                    tiempoRestante -= paso;
+                }
+
+                if (isPausado()) {
+                    synchronized (this) {
+                        this.wait();
+                    }
+                }
+
                 this.eleveen_enfadada = false;
                 logger.log("EVENTO GLOBAL: Intervención de Eleven finalizada");
                 break;
@@ -280,8 +341,21 @@ public class Sistemageneral {
             case 3: // RED MENTAL
                 logger.log("EVENTO GLOBAL: Red Mental conectada");
                 System.out.println("EVENTO: LA RED MENTAL");
-                this.red_mental_on = true; // Demogorgons van a la zona con más niños
-                Thread.sleep(duracion);
+                this.red_mental_on = true;
+
+                tiempoRestante = duracion;
+                while (tiempoRestante > 0 && !isPausado()) {
+                    long paso = Math.min(1000, tiempoRestante);
+                    Thread.sleep(paso);
+                    tiempoRestante -= paso;
+                }
+
+                if (isPausado()) {
+                    synchronized (this) {
+                        this.wait();
+                    }
+                }
+
                 this.red_mental_on = false;
                 logger.log("EVENTO GLOBAL: Red Mental desconectada");
                 System.out.println("Red mental desconectada");

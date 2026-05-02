@@ -37,6 +37,12 @@ public class Portal {
     }
     
     public void esperarycruzar(Child nino) throws InterruptedException {
+        while (sistema.isPausado()) {
+            synchronized (sistema) {
+                sistema.wait();
+            }
+        }
+        
         lock.lock();
         try {
             // Barrera de Apagón

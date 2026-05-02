@@ -43,6 +43,16 @@ public class Demogorgon extends Thread{
     @Override
     public void run() {
         while (true) {
+            if (sistema.isPausado()) {
+                synchronized (sistema) {
+                    try {
+                        sistema.wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                continue;
+            }
             try {
                 // ¿esta eleven enfadada?
                 chequear_paralisis();
@@ -64,9 +74,14 @@ public class Demogorgon extends Thread{
                 patear_calle();
 
             } catch (InterruptedException e) {
-                logger.log(id + " ha sido borrado del mapa.");
-                System.out.println(id + " ha sido borrado del mapa.");
-                break;
+                if (sistema.isPausado()) {
+                    System.out.println(id + " pausado, esperando reanudación...");
+                    continue;
+                } else {
+                    logger.log(id + " ha sido borrado del mapa.");
+                    System.out.println(id + " ha sido borrado del mapa.");
+                    break;
+                }
             }
         }
     }

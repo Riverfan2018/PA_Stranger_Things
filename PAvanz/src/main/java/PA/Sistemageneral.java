@@ -10,9 +10,14 @@ public class Sistemageneral {
     
     public final Colmena colmena;
     
+    // Eventos
     public volatile boolean red_mental_on = false;
     
     public volatile boolean eleveen_enfadada = false;
+    
+    public volatile boolean hayApagon = false;
+    
+    private final AtomicBoolean tormentaActiva = new AtomicBoolean(false);
     
     // Zonas Hola soy German
     public final Zona callePrincipal;
@@ -31,13 +36,12 @@ public class Sistemageneral {
     public final Portal portalCentroComercial;
     public final Portal portalAlcantarillado;
     
-    public volatile boolean hayApagon = false;
-    
-    private final AtomicBoolean tormentaActiva = new AtomicBoolean(false);
     
     private final List<Demogorgon> demogorgons;
     
     private final Logger logger;
+    
+    private volatile boolean pausado = false;
     
     public Sistemageneral() {
         
@@ -129,19 +133,29 @@ public class Sistemageneral {
     
     // Método para iniciar el sistema (crear niños escalonados y demogorgon alpha Auuuuu!)
     public void iniciar() {
-        
         Demogorgon alpha = new Demogorgon("D0000", this);
         demogorgons.add(alpha);
         alpha.start();
-        
+
         Thread creadorNiños = new Thread(() -> {
             for (int i = 1; i <= 1500; i++) {
+                // VERIFICAR PAUSA ANTES DE CREAR CADA NIÑO
+                while (isPausado()) {
+                    synchronized (this) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                    }
+                }
+
                 String id = String.format("N%04d", i);
                 Child nino = new Child(id, this);
                 nino.start();
-                
+
                 try {
-                    // Esperar entre 0.5 y 2 segundos 
                     long espera = (long) (500 + Math.random() * 1500);
                     Thread.sleep(espera);
                 } catch (InterruptedException e) {
@@ -288,4 +302,17 @@ public class Sistemageneral {
     public Portal getPortalCentroComercial() { return portalCentroComercial; }
     public Portal getPortalAlcantarillado() { return portalAlcantarillado; }
     
+    public synchronized void pausar() {
+        this.pausado = true;
+        logger.log("SISTEMA PAUSADO");
+    }
+
+    public synchronized void reanudar() {
+        this.pausado = false;
+        this.notifyAll();
+        logger.log("SISTEMA REANUDADO");
+    }
+    public boolean isPausado() {
+        return pausado;
+    }
 }

@@ -18,6 +18,16 @@ public class Child extends Thread {
         sistema.callePrincipal.entrar(this);
         
         while (true) {
+            if (sistema.isPausado()) {
+                synchronized (sistema) {
+                    try {
+                        sistema.wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                continue;
+            }
             try {
                 // SÓTANO BYERS 
                 sistema.callePrincipal.salir(this);
@@ -80,18 +90,29 @@ public class Child extends Thread {
                 // Repetir ciclo
                 
             } catch (InterruptedException e) {
-                System.out.println(id + " ha dejado de existir.");
-                break;
+                if (sistema.isPausado()) {
+                    System.out.println(id + " pausado, esperando reanudación...");
+                    continue;
+                } else {
+                    logger.log(id + " ha sido borrado del mapa.");
+                    System.out.println(id + " ha sido borrado del mapa.");
+                    break;
+                }
             }
         }
     }
 
     private void esperarenzona(long tiempo) throws InterruptedException {
-        long fin = System.currentTimeMillis() + tiempo;
-        while (System.currentTimeMillis() < fin && !capturado) {
-            Thread.sleep(100); 
+    long fin = System.currentTimeMillis() + tiempo;
+    while (System.currentTimeMillis() < fin && !capturado) {
+        if (sistema.isPausado()) {
+            synchronized (sistema) {
+                sistema.wait();
+            }
         }
+        Thread.sleep(100);
     }
+}
 
     private synchronized void esperarrescate() throws InterruptedException {
         while (capturado) {

@@ -40,8 +40,9 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void actualizarTodo() {
         if (out == null) return;
-
+        
         DemogorgonDelMes();
+        actualizarEvento();
     }
     
     private void enviarComando(String comando) {
@@ -89,6 +90,36 @@ public class ModuloRemoto extends javax.swing.JFrame {
         }
     }
     
+    private void actualizarEvento() {
+        if (out == null) return;
+        out.println("EVENTO");
+        try {
+            String linea = in.readLine();
+            if (linea != null && !linea.isEmpty()) {
+                String[] partes = linea.split("\\|");
+                String tipoEvento = partes[0];
+                String tiempoRestante = partes[1];
+
+                if (tipoEvento.equals("NINGUNO")) {
+                    lblEventoActual.setText("Evento: Sin evento activo");
+                    lblTiempoEvento.setText("Tiempo restante: --");
+                } else {
+                    String nombreLegible = "";
+                    switch (tipoEvento) {
+                        case "APAGÓN": nombreLegible = "Apagón del Laboratorio"; break;
+                        case "TORMENTA": nombreLegible = "Tormenta del Upside Down"; break;
+                        case "ELEVEN": nombreLegible = "Intervención de Eleven"; break;
+                        case "RED_MENTAL": nombreLegible = "Red Mental"; break;
+                    }
+                    lblEventoActual.setText("Evento: " + nombreLegible);
+                    lblTiempoEvento.setText("Tiempo restante: " + tiempoRestante + "s");
+                }
+            }
+        } catch (IOException e) {
+            lblEventoActual.setText("Evento: Error de conexión");
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -105,8 +136,11 @@ public class ModuloRemoto extends javax.swing.JFrame {
         PanelRankingDemogorgones = new javax.swing.JPanel();
         ScrollPanelRanking = new javax.swing.JScrollPane();
         txtRanking = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        lblRanking = new javax.swing.JLabel();
         PanelEvento = new javax.swing.JPanel();
+        lblEvento = new javax.swing.JLabel();
+        lblEventoActual = new javax.swing.JLabel();
+        lblTiempoEvento = new javax.swing.JLabel();
         LabelModuloRemoto = new javax.swing.JLabel();
         btnPausa = new javax.swing.JButton();
 
@@ -147,13 +181,16 @@ public class ModuloRemoto extends javax.swing.JFrame {
             .addGap(0, 354, Short.MAX_VALUE)
         );
 
+        PanelRankingDemogorgones.setBackground(new java.awt.Color(153, 153, 153));
+
+        txtRanking.setBackground(new java.awt.Color(204, 204, 204));
         txtRanking.setColumns(10);
         txtRanking.setRows(5);
         ScrollPanelRanking.setViewportView(txtRanking);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Ranking Demogorgones");
+        lblRanking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblRanking.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblRanking.setText("Ranking Demogorgones");
 
         javax.swing.GroupLayout PanelRankingDemogorgonesLayout = new javax.swing.GroupLayout(PanelRankingDemogorgones);
         PanelRankingDemogorgones.setLayout(PanelRankingDemogorgonesLayout);
@@ -163,28 +200,54 @@ public class ModuloRemoto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ScrollPanelRanking)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                    .addComponent(lblRanking, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
                 .addContainerGap())
         );
         PanelRankingDemogorgonesLayout.setVerticalGroup(
             PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRankingDemogorgonesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addComponent(lblRanking, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ScrollPanelRanking, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
+        PanelEvento.setBackground(new java.awt.Color(153, 153, 153));
+
+        lblEvento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblEvento.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEvento.setText("Evento Activo");
+
+        lblEventoActual.setBackground(new java.awt.Color(255, 255, 255));
+        lblEventoActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEventoActual.setText("SIN INICIALIZAR");
+
+        lblTiempoEvento.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTiempoEvento.setText("SIN INICIALIZAR");
+
         javax.swing.GroupLayout PanelEventoLayout = new javax.swing.GroupLayout(PanelEvento);
         PanelEvento.setLayout(PanelEventoLayout);
         PanelEventoLayout.setHorizontalGroup(
             PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelEventoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblTiempoEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblEventoActual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         PanelEventoLayout.setVerticalGroup(
             PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
+            .addGroup(PanelEventoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblEventoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTiempoEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         LabelModuloRemoto.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -305,7 +368,10 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private javax.swing.JPanel PanelResumenHawkins;
     private javax.swing.JScrollPane ScrollPanelRanking;
     private javax.swing.JButton btnPausa;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel lblEvento;
+    private javax.swing.JLabel lblEventoActual;
+    private javax.swing.JLabel lblRanking;
+    private javax.swing.JLabel lblTiempoEvento;
     private javax.swing.JTextArea txtRanking;
     // End of variables declaration//GEN-END:variables
 }

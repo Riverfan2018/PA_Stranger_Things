@@ -42,6 +42,8 @@ public class Sistemageneral {
     private final Logger logger;
     
     private volatile boolean pausado = false;
+    private long tiempoFinEvento = 0;
+    private String nombreEventoActual = "";
     
     public Sistemageneral() {
         
@@ -253,6 +255,7 @@ public class Sistemageneral {
 
         switch (tipo) {
             case 0: // APAGÓN
+                iniciarEvento("APAGÓN", duracion);
                 logger.log("EVENTO GLOBAL: Apagón del Laboratorio iniciado");
                 System.out.println(" EVENTO: APAGÓN DEL LABORATORIO");
                 this.hayApagon = true;
@@ -280,6 +283,7 @@ public class Sistemageneral {
                 break;
 
             case 1: // TORMENTA
+                iniciarEvento("TORMENTA", duracion);
                 logger.log("EVENTO GLOBAL: Tormenta del Upside Down iniciada");
                 System.out.println("EVENTO: TORMENTA DEL UPSIDE DOWN");
                 this.setTormentaActiva(true);
@@ -303,6 +307,7 @@ public class Sistemageneral {
                 break;
 
             case 2: // ELEVEN
+                iniciarEvento("ELEVEN", duracion);
                 logger.log("EVENTO GLOBAL: Intervención de Eleven iniciada");
                 System.out.println("EVENTO: INTERVENCIÓN DE ELEVEN");
                 this.eleveen_enfadada = true;
@@ -339,6 +344,7 @@ public class Sistemageneral {
                 break;
 
             case 3: // RED MENTAL
+                iniciarEvento("RED_MENTAL", duracion);
                 logger.log("EVENTO GLOBAL: Red Mental conectada");
                 System.out.println("EVENTO: LA RED MENTAL");
                 this.red_mental_on = true;
@@ -361,6 +367,21 @@ public class Sistemageneral {
                 System.out.println("Red mental desconectada");
                 break;
         }
+    }
+    
+    public void iniciarEvento(String nombre, long duracionMs) {
+        this.nombreEventoActual = nombre;
+        this.tiempoFinEvento = System.currentTimeMillis() + duracionMs;
+    }
+
+    public long getTiempoRestanteEvento() {
+        if (tiempoFinEvento == 0) return 0;
+        long restante = tiempoFinEvento - System.currentTimeMillis();
+        return restante > 0 ? restante / 1000 : 0;
+    }
+
+    public String getNombreEventoActual() {
+        return nombreEventoActual;
     }
 
     // Función auxiliar para despertar a los niños que esperan en portales

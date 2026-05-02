@@ -68,6 +68,8 @@ public class ServidorSockets {
                     return generarEstado();
                 case "RANKING":  // NUEVO COMANDO
                     return generarRanking();
+                case "EVENTO":
+                    return generarEvento();
                 case "PAUSAR":
                     sistema.pausar();
                     return "SISTEMA PAUSADO";
@@ -97,6 +99,24 @@ public class ServidorSockets {
 
             if (ranking.isEmpty()) {
                 sb.append("No hay demogorgons activos\n");
+            }
+
+            return sb.toString();
+        }
+        
+        private String generarEvento() {
+            StringBuilder sb = new StringBuilder();
+
+            if (sistema.hayApagon) {
+                sb.append("APAGÓN|").append(sistema.getTiempoRestanteEvento());
+            } else if (sistema.tormentaon()) {
+                sb.append("TORMENTA|").append(sistema.getTiempoRestanteEvento());
+            } else if (sistema.eleveen_enfadada) {
+                sb.append("ELEVEN|").append(sistema.getTiempoRestanteEvento());
+            } else if (sistema.red_mental_on) {
+                sb.append("RED_MENTAL|").append(sistema.getTiempoRestanteEvento());
+            } else {
+                sb.append("NINGUNO|0");
             }
 
             return sb.toString();

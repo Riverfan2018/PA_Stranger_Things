@@ -87,7 +87,7 @@ public class Portal {
         try {
             logger.log(nino.getNinoId() + " está cruzando el portal " + nombre + " → UPSIDE DOWN");
             System.out.println(nino.getNinoId() + " cruzando al Upside Down por " + nombre);
-            Thread.sleep(1000); 
+            sistema.sleepPausable(1000);
         } finally {
             pasounico.release();
         }
@@ -109,7 +109,7 @@ public class Portal {
         try {
             logger.log(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
             System.out.println(nino.getNinoId() + " REGRESA con prioridad por " + nombre);
-            Thread.sleep(1000);
+            sistema.sleepPausable(1000);
         } finally {
             pasounico.release();
 

@@ -410,4 +410,19 @@ public class Sistemageneral {
     public boolean isPausado() {
         return pausado;
     }
+    
+    public void sleepPausable(long tiempoMs) throws InterruptedException {
+        if (tiempoMs <= 0) return;
+        long fin = System.currentTimeMillis() + tiempoMs;
+        while (System.currentTimeMillis() < fin) {
+            if (isPausado()) {
+                synchronized (this) {
+                    this.wait();
+                }
+            }
+            long resto = fin - System.currentTimeMillis();
+            if (resto <= 0) break;
+            Thread.sleep(Math.min(100, resto));
+        }
+    }
 }

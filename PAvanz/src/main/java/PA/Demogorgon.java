@@ -67,7 +67,7 @@ public class Demogorgon extends Thread{
                     // aqui no hay ni un alma, me echo una siesta
                     logger.log(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
                     System.out.println(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
-                    sleepPausable(4000 + (long)(Math.random() * 1000));
+                    sistema.sleepPausable(4000 + (long)(Math.random() * 1000));
                 }
 
                 // me piro a otro barrio
@@ -104,7 +104,7 @@ public class Demogorgon extends Thread{
 
         logger.log(id + " ataca al niño " + victima.getNinoId() + " (capturas: " + contadorCapturas + ") en " + zonaactual.getTipo());
         System.out.println(id + " zurrando a " + victima.getNinoId() + " en " + zonaactual.getTipo());
-        sleepPausable(tiempo_pelea);
+        sistema.sleepPausable(tiempo_pelea);
 
         // a ver si tengo punteria (1/3 de exito)
         if (Math.random() < 0.33) { 
@@ -139,17 +139,5 @@ public class Demogorgon extends Thread{
             this.zonaactual = sistema.get_sitio_feo_random();
         }
         // si hay apagon, me quedo aqui que no veo tres en un burro
-    }
-    
-    private void sleepPausable(long tiempoMs) throws InterruptedException {
-        long fin = System.currentTimeMillis() + tiempoMs;
-        while (System.currentTimeMillis() < fin) {
-            if (sistema.isPausado()) {
-                synchronized (sistema) {
-                    sistema.wait();
-                }
-            }
-            Thread.sleep(Math.min(100, fin - System.currentTimeMillis()));
-        }
     }
 }

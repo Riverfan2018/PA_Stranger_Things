@@ -36,7 +36,7 @@ public class Child extends Thread {
                 logger.log(id + " ha entrado al Sótano Byers.");
                 System.out.println(id + " se prepara en el Sótano Byers.");
 
-                Thread.sleep(random(1000, 2000));
+                sistema.sleepPausable(random(1000, 2000));
                 
                 // Seleccionar portal 
                 Portal portal = sistema.seleccionarPortalAleatorio();
@@ -75,7 +75,7 @@ public class Child extends Thread {
                     
                     // RADIO WSQK 
                     sistema.radioWSQK.entrar(this);
-                    Thread.sleep(random(2000, 4000));
+                    sistema.sleepPausable(random(2000, 4000));
                     sistema.radioWSQK.salir(this);
                 } else {
                     // FRACASO: El niño espera en la COLMENA hasta ser rescatado por Eleven
@@ -85,7 +85,7 @@ public class Child extends Thread {
 
                 // CALLE PRINCIPAL 
                 sistema.callePrincipal.entrar(this);
-                Thread.sleep(random(3000, 5000));
+                sistema.sleepPausable(random(3000, 5000));
                 
                 // Repetir ciclo
                 

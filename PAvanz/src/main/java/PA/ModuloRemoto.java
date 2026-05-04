@@ -44,6 +44,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
         DemogorgonDelMes();
         actualizarEvento();
         actualizarHawkins();
+        actualizarPortales();
     }
     
     private void enviarComando(String comando) {
@@ -131,6 +132,19 @@ public class ModuloRemoto extends javax.swing.JFrame {
             }
         } catch (IOException e) {
             lblEstadoHawkins.setText("Total Niños en Hawkins: Error");
+        }
+    }
+    
+    private void actualizarPortales() {
+        if (out == null) return;
+        out.println("PORTALES");
+        try {
+            String linea = in.readLine();
+            if (linea != null) {
+                txtEstadoPortales.setText(linea.replace(" | ", "\n"));
+            }
+        } catch (IOException e) {
+            txtEstadoPortales.setText("Error");
         }
     }
     

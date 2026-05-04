@@ -76,6 +76,12 @@ public class ServidorSockets {
                         sistema.sotanoByers.getCantidadNinos() +
                         sistema.radioWSQK.getCantidadNinos()
                     );
+                case "PORTALES":
+                    int bosque = sistema.portalBosque.getCantidadEsperandoSalida() + sistema.portalBosque.getCantidadEsperandoRegreso();
+                    int lab = sistema.portalLaboratorio.getCantidadEsperandoSalida() + sistema.portalLaboratorio.getCantidadEsperandoRegreso();
+                    int centro = sistema.portalCentroComercial.getCantidadEsperandoSalida() + sistema.portalCentroComercial.getCantidadEsperandoRegreso();
+                    int alcan = sistema.portalAlcantarillado.getCantidadEsperandoSalida() + sistema.portalAlcantarillado.getCantidadEsperandoRegreso();
+                    return String.format("Bosque:%d | Laboratorio:%d | Centro:%d | Alcantarillado:%d", bosque, lab, centro, alcan);
                 case "PAUSAR":
                     sistema.pausar();
                     return "SISTEMA PAUSADO";

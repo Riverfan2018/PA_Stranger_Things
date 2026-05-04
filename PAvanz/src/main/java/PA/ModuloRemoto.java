@@ -131,8 +131,18 @@ public class ModuloRemoto extends javax.swing.JFrame {
 
         PanelGeneral = new javax.swing.JPanel();
         PanelResumenHawkins = new javax.swing.JPanel();
+        lblTituloResumenHawkins = new javax.swing.JLabel();
+        lblEstadoHawkins = new javax.swing.JLabel();
         PanelEstadoPortales = new javax.swing.JPanel();
+        lblTituloEstadoPortales = new javax.swing.JLabel();
+        jScrollEstadoPortales = new javax.swing.JScrollPane();
+        txtEstadoPortales = new javax.swing.JTextArea();
         PanelEstadoUD = new javax.swing.JPanel();
+        lblTituloEstadoUD = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtEstadoUDNinos = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtEstadoUDDemogorgones = new javax.swing.JTextArea();
         PanelRankingDemogorgones = new javax.swing.JPanel();
         ScrollPanelRanking = new javax.swing.JScrollPane();
         txtRanking = new javax.swing.JTextArea();
@@ -148,37 +158,110 @@ public class ModuloRemoto extends javax.swing.JFrame {
 
         PanelGeneral.setBackground(new java.awt.Color(102, 102, 102));
 
+        PanelResumenHawkins.setBackground(new java.awt.Color(153, 153, 153));
+
+        lblTituloResumenHawkins.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTituloResumenHawkins.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloResumenHawkins.setText("Resumen Hawkins");
+
+        lblEstadoHawkins.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblEstadoHawkins.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoHawkins.setText("Total Niños en Hawkins: [/n]");
+
         javax.swing.GroupLayout PanelResumenHawkinsLayout = new javax.swing.GroupLayout(PanelResumenHawkins);
         PanelResumenHawkins.setLayout(PanelResumenHawkinsLayout);
         PanelResumenHawkinsLayout.setHorizontalGroup(
             PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
+            .addGroup(PanelResumenHawkinsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTituloResumenHawkins, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblEstadoHawkins, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                .addContainerGap())
         );
         PanelResumenHawkinsLayout.setVerticalGroup(
             PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
+            .addGroup(PanelResumenHawkinsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTituloResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblEstadoHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
+
+        PanelEstadoPortales.setBackground(new java.awt.Color(153, 153, 153));
+
+        lblTituloEstadoPortales.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTituloEstadoPortales.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloEstadoPortales.setText("Estado de Portales");
+
+        txtEstadoPortales.setBackground(new java.awt.Color(204, 204, 204));
+        txtEstadoPortales.setColumns(10);
+        txtEstadoPortales.setRows(5);
+        jScrollEstadoPortales.setViewportView(txtEstadoPortales);
 
         javax.swing.GroupLayout PanelEstadoPortalesLayout = new javax.swing.GroupLayout(PanelEstadoPortales);
         PanelEstadoPortales.setLayout(PanelEstadoPortalesLayout);
         PanelEstadoPortalesLayout.setHorizontalGroup(
             PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(PanelEstadoPortalesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTituloEstadoPortales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollEstadoPortales))
+                .addContainerGap())
         );
         PanelEstadoPortalesLayout.setVerticalGroup(
             PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(PanelEstadoPortalesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTituloEstadoPortales, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollEstadoPortales, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
+
+        PanelEstadoUD.setBackground(new java.awt.Color(153, 153, 153));
+
+        lblTituloEstadoUD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTituloEstadoUD.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloEstadoUD.setText("Ubicaciónes Upside Down");
+
+        txtEstadoUDNinos.setBackground(new java.awt.Color(204, 204, 204));
+        txtEstadoUDNinos.setColumns(10);
+        txtEstadoUDNinos.setRows(5);
+        jScrollPane1.setViewportView(txtEstadoUDNinos);
+
+        txtEstadoUDDemogorgones.setBackground(new java.awt.Color(204, 204, 204));
+        txtEstadoUDDemogorgones.setColumns(10);
+        txtEstadoUDDemogorgones.setRows(5);
+        jScrollPane2.setViewportView(txtEstadoUDDemogorgones);
 
         javax.swing.GroupLayout PanelEstadoUDLayout = new javax.swing.GroupLayout(PanelEstadoUD);
         PanelEstadoUD.setLayout(PanelEstadoUDLayout);
         PanelEstadoUDLayout.setHorizontalGroup(
             PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 350, Short.MAX_VALUE)
+            .addGroup(PanelEstadoUDLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTituloEstadoUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(PanelEstadoUDLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         PanelEstadoUDLayout.setVerticalGroup(
             PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 354, Short.MAX_VALUE)
+            .addGroup(PanelEstadoUDLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTituloEstadoUD, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         PanelRankingDemogorgones.setBackground(new java.awt.Color(153, 153, 153));
@@ -273,15 +356,15 @@ public class ModuloRemoto extends javax.swing.JFrame {
                     .addComponent(PanelEstadoPortales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PanelResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PanelEstadoUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnPausa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnPausa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(PanelEstadoUD, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PanelRankingDemogorgones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PanelEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         PanelGeneralLayout.setVerticalGroup(
             PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,7 +377,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
                         .addComponent(PanelEstadoUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PanelGeneralLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelGeneralLayout.createSequentialGroup()
                         .addComponent(PanelRankingDemogorgones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(PanelEvento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -309,7 +392,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PanelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PanelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,10 +451,20 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private javax.swing.JPanel PanelResumenHawkins;
     private javax.swing.JScrollPane ScrollPanelRanking;
     private javax.swing.JButton btnPausa;
+    private javax.swing.JScrollPane jScrollEstadoPortales;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblEstadoHawkins;
     private javax.swing.JLabel lblEvento;
     private javax.swing.JLabel lblEventoActual;
     private javax.swing.JLabel lblRanking;
     private javax.swing.JLabel lblTiempoEvento;
+    private javax.swing.JLabel lblTituloEstadoPortales;
+    private javax.swing.JLabel lblTituloEstadoUD;
+    private javax.swing.JLabel lblTituloResumenHawkins;
+    private javax.swing.JTextArea txtEstadoPortales;
+    private javax.swing.JTextArea txtEstadoUDDemogorgones;
+    private javax.swing.JTextArea txtEstadoUDNinos;
     private javax.swing.JTextArea txtRanking;
     // End of variables declaration//GEN-END:variables
 }

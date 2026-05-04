@@ -66,10 +66,16 @@ public class ServidorSockets {
             switch (comando.toUpperCase()) {
                 case "ESTADO":
                     return generarEstado();
-                case "RANKING":  // NUEVO COMANDO
+                case "RANKING":
                     return generarRanking();
                 case "EVENTO":
                     return generarEvento();
+                case "NINOS_HAWKINS":
+                    return String.valueOf(
+                        sistema.callePrincipal.getCantidadNinos() +
+                        sistema.sotanoByers.getCantidadNinos() +
+                        sistema.radioWSQK.getCantidadNinos()
+                    );
                 case "PAUSAR":
                     sistema.pausar();
                     return "SISTEMA PAUSADO";

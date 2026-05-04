@@ -116,7 +116,12 @@ public class Child extends Thread {
 
     private synchronized void esperarrescate() throws InterruptedException {
         while (capturado) {
-            wait(); // El hilo se duerme en la colmena
+            if (sistema.isPausado()) {
+                synchronized (sistema) {
+                    sistema.wait();
+                }
+            }
+            wait(100);  // Timeout para verificar pausa regularmente
         }
     }
 

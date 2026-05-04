@@ -43,6 +43,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
         
         DemogorgonDelMes();
         actualizarEvento();
+        actualizarHawkins();
     }
     
     private void enviarComando(String comando) {
@@ -62,10 +63,10 @@ public class ModuloRemoto extends javax.swing.JFrame {
         if (out != null) {
             if (pausado) {
                 out.println("REANUDAR");
-                btnPausa.setText("Reanudar");
+                btnPausa.setText("Pausar");
             } else {
                 out.println("PAUSAR");
-                btnPausa.setText("Pausar");
+                btnPausa.setText("Reanudar");
             }
             pausado = !pausado;
         } else {
@@ -117,6 +118,19 @@ public class ModuloRemoto extends javax.swing.JFrame {
             }
         } catch (IOException e) {
             lblEventoActual.setText("Evento: Error de conexión");
+        }
+    }
+    
+    private void actualizarHawkins() {
+        if (out == null) return;
+        out.println("NINOS_HAWKINS");
+        try {
+            String total = in.readLine();
+            if (total != null && !total.isEmpty()) {
+                lblEstadoHawkins.setText("Total Niños en Hawkins: " + total);
+            }
+        } catch (IOException e) {
+            lblEstadoHawkins.setText("Total Niños en Hawkins: Error");
         }
     }
     

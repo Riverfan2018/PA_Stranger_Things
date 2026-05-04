@@ -82,6 +82,21 @@ public class ServidorSockets {
                     int centro = sistema.portalCentroComercial.getCantidadEsperandoSalida() + sistema.portalCentroComercial.getCantidadEsperandoRegreso();
                     int alcan = sistema.portalAlcantarillado.getCantidadEsperandoSalida() + sistema.portalAlcantarillado.getCantidadEsperandoRegreso();
                     return String.format("Bosque:%d | Laboratorio:%d | Centro:%d | Alcantarillado:%d", bosque, lab, centro, alcan);
+                case "UPSIDE_DOWN":
+                    int ninosBosque = sistema.bosque.getCantidadNinos();
+                    int ninosLab = sistema.laboratorio.getCantidadNinos();
+                    int ninosCentro = sistema.centroComercial.getCantidadNinos();
+                    int ninosAlcan = sistema.alcantarillado.getCantidadNinos();
+                    int ninosColmena = sistema.colmena.getCantidadNinos();
+
+                    int demosBosque = contarDemogorgonsEn(sistema.bosque, sistema);
+                    int demosLab = contarDemogorgonsEn(sistema.laboratorio, sistema);
+                    int demosCentro = contarDemogorgonsEn(sistema.centroComercial, sistema);
+                    int demosAlcan = contarDemogorgonsEn(sistema.alcantarillado, sistema);
+
+                    return String.format("%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+                        ninosBosque, ninosLab, ninosCentro, ninosAlcan, ninosColmena,
+                        demosBosque, demosLab, demosCentro, demosAlcan);
                 case "PAUSAR":
                     sistema.pausar();
                     return "SISTEMA PAUSADO";
@@ -94,26 +109,16 @@ public class ServidorSockets {
         }
         
         private String generarRanking() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("=== TOP 3 DEMOGORGONS ===\n");
-
             List<Demogorgon> ranking = new ArrayList<>(sistema.getDemogorgons());
             ranking.sort((a, b) -> Integer.compare(b.getContadorCapturas(), a.getContadorCapturas()));
 
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < Math.min(3, ranking.size()); i++) {
                 Demogorgon d = ranking.get(i);
-                sb.append((i+1)).append(". ")
-                  .append(d.getDemogorgonId())
-                  .append(" (")
-                  .append(d.getContadorCapturas())
-                  .append(" capturas)\n");
+                if (i > 0) sb.append(" | ");
+                sb.append(d.getDemogorgonId()).append("(").append(d.getContadorCapturas()).append(")");
             }
-
-            if (ranking.isEmpty()) {
-                sb.append("No hay demogorgons activos\n");
-            }
-
-            return sb.toString();
+            return ranking.isEmpty() ? "---" : sb.toString();
         }
         
         private String generarEvento() {

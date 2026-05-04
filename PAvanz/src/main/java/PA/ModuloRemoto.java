@@ -45,6 +45,7 @@ public class ModuloRemoto extends javax.swing.JFrame {
         actualizarEvento();
         actualizarHawkins();
         actualizarPortales();
+        actualizarUpsideDown();
     }
     
     private void enviarComando(String comando) {
@@ -79,16 +80,14 @@ public class ModuloRemoto extends javax.swing.JFrame {
         if (out == null) return;
         out.println("RANKING");
         try {
-            StringBuilder sb = new StringBuilder();
-            String linea;
-            // Leer hasta línea vacía (fin del mensaje)
-            while ((linea = in.readLine()) != null) {
-                if (linea.isEmpty()) break;
-                sb.append(linea).append("\n");
+            String linea = in.readLine();
+            if (linea != null && !linea.isEmpty()) {
+                // Limpiar el formato del ranking
+                String ranking = linea.replace("=== TOP 3 DEMOGORGONS ===\n", "");
+                txtRanking.setText(ranking);
             }
-            txtRanking.setText(sb.toString());
         } catch (IOException e) {
-            txtRanking.setText("Error al obtener ranking");
+            txtRanking.setText("Error");
         }
     }
     
@@ -145,6 +144,37 @@ public class ModuloRemoto extends javax.swing.JFrame {
             }
         } catch (IOException e) {
             txtEstadoPortales.setText("Error");
+        }
+    }
+    
+    private void actualizarUpsideDown() {
+        if (out == null) return;
+        out.println("UPSIDE_DOWN");
+        try {
+            String linea = in.readLine();
+            if (linea != null && !linea.isEmpty()) {
+                String[] partes = linea.split("\\|");
+                if (partes.length >= 9) {
+                    // Niños por zona
+                    txtEstadoUDNinos.setText(
+                        "Bosque: " + partes[0] + " niños\n" +
+                        "Laboratorio: " + partes[1] + " niños\n" +
+                        "Centro: " + partes[2] + " niños\n" +
+                        "Alcantarillado: " + partes[3] + " niños\n" +
+                        "Colmena: " + partes[4] + " niños"
+                    );
+                    // Demogorgons por zona
+                    txtEstadoUDDemogorgones.setText(
+                        "Bosque: " + partes[5] + " demos\n" +
+                        "Laboratorio: " + partes[6] + " demos\n" +
+                        "Centro: " + partes[7] + " demos\n" +
+                        "Alcantarillado: " + partes[8] + " demos"
+                    );
+                }
+            }
+        } catch (IOException e) {
+            txtEstadoUDNinos.setText("Error");
+            txtEstadoUDDemogorgones.setText("Error");
         }
     }
     

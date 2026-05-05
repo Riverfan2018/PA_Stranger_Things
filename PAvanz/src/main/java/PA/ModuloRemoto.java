@@ -7,8 +7,9 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private String servidorIP = "localhost";
-    private int puerto = 8080;
+    private final String servidorIP = "localhost";
+    private final int puerto = 8080;
+    private final Object socketLock = new Object();
     
     public ModuloRemoto() {
         initComponents();
@@ -39,19 +40,22 @@ public class ModuloRemoto extends javax.swing.JFrame {
     }
     
     private void actualizarTodo() {
-        if (out == null) return;
-        
-        DemogorgonDelMes();
-        actualizarEvento();
-        actualizarHawkins();
-        actualizarPortales();
-        actualizarUpsideDown();
+        synchronized (socketLock) {
+            if (out == null) return;
+            DemogorgonDelMes();
+            actualizarEvento();
+            actualizarHawkins();
+            actualizarPortales();
+            actualizarUpsideDown();
+        }
     }
     
     private void enviarComando(String comando) {
-        if (out != null) {
-            out.println(comando);
-            actualizarTodo();
+        synchronized (socketLock) {
+            if (out != null) {
+                out.println(comando);
+                actualizarTodo();
+            }
         }
     }
     
@@ -63,16 +67,21 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void togglePausa() {
         if (out != null) {
-            if (pausado) {
-                out.println("REANUDAR");
-                btnPausa.setText("Pausar");
-            } else {
-                out.println("PAUSAR");
-                btnPausa.setText("Reanudar");
+            try {
+                if (pausado) {
+                    out.println("REANUDAR");
+                    btnPausa.setText("Pausar");
+                } else {
+                    out.println("PAUSAR");
+                    btnPausa.setText("Reanudar");
+                }
+                // Leer y descartar la respuesta del servidor
+                String respuesta = in.readLine();
+                System.out.println("Respuesta: " + respuesta);
+                pausado = !pausado;
+            } catch (IOException e) {
+                System.err.println("Error en togglePausa: " + e.getMessage());
             }
-            pausado = !pausado;
-        } else {
-            System.out.println("No conectado al servidor");
         }
     }
     
@@ -96,28 +105,38 @@ public class ModuloRemoto extends javax.swing.JFrame {
         out.println("EVENTO");
         try {
             String linea = in.readLine();
-            if (linea != null && !linea.isEmpty()) {
+            if (linea != null && !linea.isEmpty() && linea.contains("|")) {
                 String[] partes = linea.split("\\|");
-                String tipoEvento = partes[0];
-                String tiempoRestante = partes[1];
+                if (partes.length >= 2) {
+                    String tipoEvento = partes[0];
+                    String tiempoRestante = partes[1];
 
-                if (tipoEvento.equals("NINGUNO")) {
-                    lblEventoActual.setText("Evento: Sin evento activo");
-                    lblTiempoEvento.setText("Tiempo restante: --");
-                } else {
-                    String nombreLegible = "";
-                    switch (tipoEvento) {
-                        case "APAGÓN": nombreLegible = "Apagón del Laboratorio"; break;
-                        case "TORMENTA": nombreLegible = "Tormenta del Upside Down"; break;
-                        case "ELEVEN": nombreLegible = "Intervención de Eleven"; break;
-                        case "RED_MENTAL": nombreLegible = "Red Mental"; break;
+                    if (tipoEvento.equals("NINGUNO")) {
+                        lblEventoActual.setText("Evento: Sin evento activo");
+                        lblTiempoEvento.setText("Tiempo restante: --");
+                    } else {
+                        String nombreLegible = "";
+                        switch (tipoEvento) {
+                            case "APAGÓN": nombreLegible = "Apagón del Laboratorio"; break;
+                            case "TORMENTA": nombreLegible = "Tormenta del Upside Down"; break;
+                            case "ELEVEN": nombreLegible = "Intervención de Eleven"; break;
+                            case "RED_MENTAL": nombreLegible = "Red Mental"; break;
+                            default: nombreLegible = tipoEvento;
+                        }
+                        lblEventoActual.setText("Evento: " + nombreLegible);
+                        lblTiempoEvento.setText("Tiempo restante: " + tiempoRestante + "s");
                     }
-                    lblEventoActual.setText("Evento: " + nombreLegible);
-                    lblTiempoEvento.setText("Tiempo restante: " + tiempoRestante + "s");
+                } else {
+                    // Formato inesperado, ignorar
+                    System.err.println("Formato de evento inválido: " + linea);
                 }
+            } else {
+                // Si la línea no tiene '|', probablemente es un mensaje del sistema. Ignorar.
+                System.err.println("Línea de evento inesperada: " + linea);
             }
         } catch (IOException e) {
             lblEventoActual.setText("Evento: Error de conexión");
+            lblTiempoEvento.setText("Tiempo restante: --");
         }
     }
     

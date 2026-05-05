@@ -89,7 +89,12 @@ public class Demogorgon extends Thread{
     private void chequear_paralisis() throws InterruptedException {
         // si la niña esta usando sus poderes, me quedo moñeco
         while (sistema.eleveen_enfadada) {
-            Thread.sleep(100); 
+            if (sistema.isPausado()) {
+                synchronized (sistema) {
+                    sistema.wait();
+                }
+            }
+            Thread.sleep(100);
         }
     }
 
@@ -124,7 +129,7 @@ public class Demogorgon extends Thread{
         victima.setcapturado(true); 
 
         // tardo un poco en atarlo bien
-        Thread.sleep((long) (500 + Math.random() * 500));
+        sistema.sleepPausable((long) (500 + Math.random() * 500));
 
         incrementarCapturas();
         sistema.aviso_a_vecna(); // vecna vigila...

@@ -223,7 +223,6 @@ public class Sistemageneral {
                     long espera = 30000 + rnd.nextInt(30001);
                     logger.log("Próximo evento en " + (espera / 1000) + " segundos");
                     System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
-                    Thread.sleep(espera);
                     
                     // Espera en intervalos pequeños para verificar pausa
                     long tiempoRestante = espera;

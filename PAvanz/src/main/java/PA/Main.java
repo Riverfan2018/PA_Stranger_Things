@@ -12,7 +12,7 @@ public class Main {
             System.err.println("El sistema continuará ejecutándose sin acceso remoto.");
         }
         
-        Logger.getInstance().log("=== LA BATALLA YA HA EMPEZADO ===");
+        Logger.getInstance().log("=== LA BATALLA YA HA EMPEZADO ==="); //en un mundo muy cuadrado...
         System.out.println("La simulación comienza");
         
         java.awt.EventQueue.invokeLater(() -> {

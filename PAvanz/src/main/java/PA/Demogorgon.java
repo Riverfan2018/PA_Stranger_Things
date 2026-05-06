@@ -68,7 +68,14 @@ public class Demogorgon extends Thread{
                     logger.log(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
                     System.out.println(id + " se aburre en " + zonaactual.getTipo() + ". Esperando...");
                     sistema.sleepPausable(4000 + (long)(Math.random() * 1000));
+                    
+                    victima = zonaactual.seleccionarNinoAleatorio();
+                    if (victima !=null){
+                        darle_caña(victima);
+                    }
                 }
+                
+                
 
                 // me piro a otro barrio
                 patear_calle();
@@ -99,7 +106,7 @@ public class Demogorgon extends Thread{
     }
 
     private void darle_caña(Child victima) throws InterruptedException {
-        // cuanto tardo en soltar bofetadas
+  // cuanto tardo en soltar bofetadas
         long tiempo_pelea = (long) (500 + Math.random() * 1000);
 
         // con tormenta voy con el turbo puesto
@@ -115,6 +122,9 @@ public class Demogorgon extends Thread{
         if (Math.random() < 0.33) { 
             if (zonaactual.capturarnino(victima) != null) {
                 secuestrar(victima);
+                logger.log(id + " capturado a " + victima.getNinoId());
+                System.out.println(id + " ha capturado a  " + victima.getNinoId());
+                
             }
         } else {
             logger.log(id + " ha fallado el ataque contra " + victima.getNinoId());
@@ -125,6 +135,7 @@ public class Demogorgon extends Thread{
     private void secuestrar(Child victima) throws InterruptedException {
         // lo llevo al zulo (la colmena)
         logger.log("El niño " + victima.getNinoId() + " ha sido capturado");
+        System.out.println("El niño " + victima.getNinoId() + " ha sido capturado");
         sistema.colmena.entrar(victima);
         victima.setcapturado(true); 
 

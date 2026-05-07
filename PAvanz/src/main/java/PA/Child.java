@@ -66,21 +66,22 @@ public class Child extends Thread {
                 if (!this.capturado) {
 
                     logger.log(id + " regresa con sangre de Vecna.");
-                    // EXITO: Recolecta 1 unidad de sangre y vuelve
                     System.out.println(id + " recolectó sangre y regresa a Hawkins.");
                     sistema.sumar_sangre();
 
+
+                    portal.regresaraHawkins(this); 
+
+
                     zonaUD.salir(this);
-                    portal.regresaraHawkins(this); // Prioridad de regreso
                     
                     // RADIO WSQK 
                     sistema.radioWSQK.entrar(this);
                     sistema.sleepPausable(random(2000, 4000));
                     sistema.radioWSQK.salir(this);
                 } else {
-                    // FRACASO: El niño espera en la COLMENA hasta ser rescatado por Eleven
+
                     esperarrescate();
-                    // Al salir de aquí, Eleven ya lo habrá puesto en la Calle Principal
                 }
 
                 // CALLE PRINCIPAL 
@@ -90,6 +91,17 @@ public class Child extends Thread {
                 // Repetir ciclo
                 
             } catch (InterruptedException e) {
+                if (this.capturado) {
+                    // Si el Demogorgon nos interrumpió en la cola del portalvamos directos a esperar el rescate de Eleven.
+                    try {
+                        esperarrescate();
+                        sistema.callePrincipal.entrar(this);
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                    continue; 
+                }
+
                 if (sistema.isPausado()) {
                     System.out.println(id + " pausado, esperando reanudación...");
                     continue;
@@ -133,7 +145,10 @@ public class Child extends Thread {
             logger.log(id + " ha sido rescatado de la Colmena");
         } 
     }
-
+    public boolean retenidocontrasuvoluntad() {
+        return capturado;
+    }
+    
     private long random(int min, int max) {
         return (long) (Math.random() * (max - min) + min);
     }

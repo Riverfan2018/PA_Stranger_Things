@@ -94,38 +94,79 @@ public class Portal {
     }
 
     public void regresaraHawkins(Child nino) throws InterruptedException {
-        //Marcamos que hay alguien queriendo volver (bloquea a los que quieren entrar)
         lock.lock();
         try {
             ninosEsperandoRegreso.add(nino);
             ninosregresando++;
             logger.log(nino.getNinoId() + " espera REGRESO en portal " + nombre);
+
+            //Solo entramos al await si el pasillo está ocupado
+            while (pasounico.availablePermits() == 0) {
+                esperaretorno.await(); 
+
+                // Si al despertar nos han capturado, abortamos
+                if (nino.retenidocontrasuvoluntad()) {
+                    throw new InterruptedException("Capturado en la cola");
+                }
+            }
+        } catch (InterruptedException e) {
+            ninosEsperandoRegreso.remove(nino);
+            ninosregresando--;
+            if (ninosregresando == 0) esperaretorno.signalAll();
+            throw e; 
         } finally {
             lock.unlock();
         }
 
-        //Cruce físico con prioridad
+        // Cruce físico con prioridad
+        // acquire() puede lanzar InterruptedException si el Demogorgon
+        // interrumpe justo en este instante.
         pasounico.acquire();
         try {
+            // Doble check por si la captura fue en el microsegundo del acquire
+            if (nino.retenidocontrasuvoluntad()) throw new InterruptedException();
+
             logger.log(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
-            System.out.println(nino.getNinoId() + " REGRESA con prioridad por " + nombre);
+            System.out.println(nino.getNinoId() + " regresa con prioridad por " + nombre);
             sistema.sleepPausable(1000);
         } finally {
             pasounico.release();
 
-            // Al terminar, restamos y avisamos a los que esperan para entrar
+            // Al terminar, limpiamos y avisamos
             lock.lock();
             try {
                 ninosEsperandoRegreso.remove(nino);
                 ninosregresando--;
-                if (ninosregresando == 0) {
-                    esperaretorno.signalAll(); 
-                }
+                // Despertamos a los siguientes (tanto a los que vuelven como a los que entran)
+                esperaretorno.signalAll(); 
+                // También a los de esperagrupo por si acaso
+                despertarPorLuz(); 
             } finally {
                 lock.unlock();
             }
         }
-    }
+            //Cruce físico con prioridad
+            pasounico.acquire();
+            try {
+                logger.log(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
+                System.out.println(nino.getNinoId() + " REGRESA con prioridad por " + nombre);
+                sistema.sleepPausable(1000);
+            } finally {
+                pasounico.release();
+
+                // Al terminar, restamos y avisamos a los que esperan para entrar
+                lock.lock();
+                try {
+                    ninosEsperandoRegreso.remove(nino);
+                    ninosregresando--;
+                    if (ninosregresando == 0) {
+                        esperaretorno.signalAll(); 
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
     
     // ========== GETTERS PARA LA GUI ==========
     public List<Child> getNinosEsperandoSalida() {

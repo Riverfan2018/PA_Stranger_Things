@@ -121,6 +121,8 @@ public class Demogorgon extends Thread{
         // a ver si tengo punteria (1/3 de exito)
         if (Math.random() < 0.33) { 
             if (zonaactual.capturarnino(victima) != null) {
+                
+                victima.interrupt();
                 secuestrar(victima);
                 logger.log(id + " capturado a " + victima.getNinoId());
                 System.out.println(id + " ha capturado a  " + victima.getNinoId());

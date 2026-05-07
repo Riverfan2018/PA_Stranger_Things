@@ -71,11 +71,11 @@ public class Colmena {
     }
     
     public List<Child> getNinosCapturados() {
-    lock.lock();
-    try {
-        return new ArrayList<>(ninosCapturados);
-    } finally {
-        lock.unlock();
+        lock.lock();
+        try {
+            return new ArrayList<>(ninosCapturados);
+        } finally {
+            lock.unlock();
+        }
     }
-}
 }

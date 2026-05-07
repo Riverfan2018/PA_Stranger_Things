@@ -48,13 +48,15 @@ public class ServidorSockets {
         
         @Override
         public void run() {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                
+            try (DataInputStream in = new DataInputStream(socket.getInputStream());
+                 DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
+
                 String comando;
-                while ((comando = in.readLine()) != null) {
+                while (true) {
+                    comando = in.readUTF();
                     String respuesta = procesarComando(comando);
-                    out.println(respuesta);
+                    out.writeUTF(respuesta);
+                    out.flush();
                     if (comando.equalsIgnoreCase("SALIR")) break;
                 }
             } catch (IOException e) {

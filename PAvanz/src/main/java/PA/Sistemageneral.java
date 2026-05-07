@@ -202,6 +202,10 @@ public class Sistemageneral {
     public void sumar_sangre() {
         sangre_total.incrementAndGet();
     }
+    
+    public void restar_sangre() {
+        sangre_total.updateAndGet(v -> Math.max(0, v - 1));
+    }
 
     public int get_sangre_recolectada() {
         return sangre_total.get(); 
@@ -319,11 +323,14 @@ public class Sistemageneral {
                         colmena.salir(c);
                         c.setcapturado(false);
                         callePrincipal.entrar(c);
+                        
+                        restar_sangre();
                         rescatados++;
+                        sangre--;
                     }
                 }
-                logger.log("Eleven ha usado " + sangre + " unidades de sangre para rescatar a " + rescatados + " niños");
-                System.out.println("Eleven ha usado " + sangre + " de sangre para rescatar a " + rescatados + " niños.");
+                logger.log("Eleven ha rescatado a " + rescatados + " niños. Sangre restante: " + get_sangre_recolectada());
+                System.out.println("Eleven ha rescatado a " + rescatados + " niños. Sangre restante: " + get_sangre_recolectada());
 
                 tiempoRestante = duracion;
                 while (tiempoRestante > 0 && !isPausado()) {

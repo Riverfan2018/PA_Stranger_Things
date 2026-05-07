@@ -18052,3 +18052,269 @@
 2026-05-06 16:13:17.303 - N0014 ha llegado a ALCANTARILLADO
 2026-05-06 16:13:17.335 - SISTEMA PAUSADO
 2026-05-06 16:18:01.795 - === SIMULACIÓN FINALIZADA ===
+2026-05-06 17:01:39.786 - === LA BATALLA YA HA EMPEZADO ===
+2026-05-06 17:01:39.856 - D0000 ha aparecido en CENTRO_COMERCIAL
+2026-05-06 17:01:39.857 - D0000 se aburre en CENTRO_COMERCIAL. Esperando...
+2026-05-06 17:01:39.863 - Próximo evento en 44 segundos
+2026-05-06 17:01:39.875 - N0001 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:39.876 - N0001 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:39.877 - N0001 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:39.878 - N0001 ha entrado al Sótano Byers.
+2026-05-06 17:01:41.418 - N0002 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:41.420 - N0002 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:41.420 - N0002 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:41.421 - N0002 ha entrado al Sótano Byers.
+2026-05-06 17:01:41.718 - N0001 ha salido de SOTANO_BYERS
+2026-05-06 17:01:41.738 - N0001 espera grupo en portal Bosque (1/2)
+2026-05-06 17:01:43.145 - N0003 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:43.147 - N0003 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:43.147 - N0003 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:43.148 - N0003 ha entrado al Sótano Byers.
+2026-05-06 17:01:43.315 - N0002 ha salido de SOTANO_BYERS
+2026-05-06 17:01:43.315 - N0002 espera grupo en portal Bosque (2/2)
+2026-05-06 17:01:43.316 - N0002 está cruzando el portal Bosque → UPSIDE DOWN
+2026-05-06 17:01:44.120 - N0004 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:44.121 - N0004 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:44.121 - N0004 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:44.122 - N0004 ha entrado al Sótano Byers.
+2026-05-06 17:01:44.247 - D0000 se aburre en ALCANTARILLADO. Esperando...
+2026-05-06 17:01:44.317 - N0001 está cruzando el portal Bosque → UPSIDE DOWN
+2026-05-06 17:01:44.321 - N0002 ha entrado a BOSQUE
+2026-05-06 17:01:44.322 - N0002 ha llegado a BOSQUE
+2026-05-06 17:01:44.723 - N0003 ha salido de SOTANO_BYERS
+2026-05-06 17:01:44.723 - N0003 espera grupo en portal Centro Comercial (1/4)
+2026-05-06 17:01:45.275 - N0004 ha salido de SOTANO_BYERS
+2026-05-06 17:01:45.276 - N0004 espera grupo en portal Centro Comercial (2/4)
+2026-05-06 17:01:45.319 - N0001 ha entrado a BOSQUE
+2026-05-06 17:01:45.320 - N0001 ha llegado a BOSQUE
+2026-05-06 17:01:45.787 - N0005 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:45.788 - N0005 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:45.792 - N0005 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:45.792 - N0005 ha entrado al Sótano Byers.
+2026-05-06 17:01:47.020 - N0006 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:47.023 - N0006 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:47.028 - N0006 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:47.029 - N0006 ha entrado al Sótano Byers.
+2026-05-06 17:01:47.601 - N0005 ha salido de SOTANO_BYERS
+2026-05-06 17:01:47.601 - N0005 espera grupo en portal Bosque (1/2)
+2026-05-06 17:01:47.962 - N0007 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:47.963 - N0007 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:47.963 - N0007 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:47.963 - N0007 ha entrado al Sótano Byers.
+2026-05-06 17:01:48.477 - N0002 regresa con sangre de Vecna.
+2026-05-06 17:01:48.478 - N0002 ha salido de BOSQUE
+2026-05-06 17:01:48.483 - N0002 espera REGRESO en portal Bosque
+2026-05-06 17:01:48.484 - N0002 regresa a Hawkins por el portal Bosque
+2026-05-06 17:01:48.795 - D0000 se aburre en ALCANTARILLADO. Esperando...
+2026-05-06 17:01:48.897 - N0008 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:48.898 - N0008 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:48.898 - N0008 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:48.899 - N0008 ha entrado al Sótano Byers.
+2026-05-06 17:01:48.900 - N0006 ha salido de SOTANO_BYERS
+2026-05-06 17:01:48.905 - N0006 espera grupo en portal Centro Comercial (3/4)
+2026-05-06 17:01:49.486 - N0002 ha entrado a RADIO_WSQK
+2026-05-06 17:01:49.612 - N0001 regresa con sangre de Vecna.
+2026-05-06 17:01:49.615 - N0001 ha salido de BOSQUE
+2026-05-06 17:01:49.616 - N0001 espera REGRESO en portal Bosque
+2026-05-06 17:01:49.618 - N0001 regresa a Hawkins por el portal Bosque
+2026-05-06 17:01:49.657 - N0007 ha salido de SOTANO_BYERS
+2026-05-06 17:01:49.657 - N0007 espera grupo en portal Centro Comercial (4/4)
+2026-05-06 17:01:49.657 - N0007 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:01:50.620 - N0001 ha entrado a RADIO_WSQK
+2026-05-06 17:01:50.659 - N0007 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:01:50.659 - N0003 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:01:50.660 - N0007 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:01:50.739 - N0008 ha salido de SOTANO_BYERS
+2026-05-06 17:01:50.739 - N0008 espera grupo en portal Laboratorio (1/3)
+2026-05-06 17:01:50.803 - N0009 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:50.804 - N0009 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:50.805 - N0009 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:50.805 - N0009 ha entrado al Sótano Byers.
+2026-05-06 17:01:51.660 - N0004 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:01:51.661 - N0003 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:01:51.662 - N0003 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:01:51.885 - N0009 ha salido de SOTANO_BYERS
+2026-05-06 17:01:51.885 - N0009 espera grupo en portal Bosque (2/2)
+2026-05-06 17:01:51.885 - N0009 está cruzando el portal Bosque → UPSIDE DOWN
+2026-05-06 17:01:52.164 - N0010 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:52.165 - N0010 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:52.165 - N0010 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:52.165 - N0010 ha entrado al Sótano Byers.
+2026-05-06 17:01:52.421 - N0002 ha salido de RADIO_WSQK
+2026-05-06 17:01:52.421 - N0002 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:52.662 - N0006 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:01:52.662 - N0004 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:01:52.662 - N0004 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:01:52.887 - N0009 ha entrado a BOSQUE
+2026-05-06 17:01:52.887 - N0005 está cruzando el portal Bosque → UPSIDE DOWN
+2026-05-06 17:01:52.887 - N0009 ha llegado a BOSQUE
+2026-05-06 17:01:52.998 - D0000 se aburre en ALCANTARILLADO. Esperando...
+2026-05-06 17:01:53.109 - N0011 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:53.109 - N0011 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:53.110 - N0011 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:53.110 - N0011 ha entrado al Sótano Byers.
+2026-05-06 17:01:53.603 - N0010 ha salido de SOTANO_BYERS
+2026-05-06 17:01:53.603 - N0010 espera grupo en portal Laboratorio (2/3)
+2026-05-06 17:01:53.665 - N0006 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:01:53.665 - N0006 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:01:53.888 - N0005 ha entrado a BOSQUE
+2026-05-06 17:01:53.888 - N0005 ha llegado a BOSQUE
+2026-05-06 17:01:54.225 - N0011 ha salido de SOTANO_BYERS
+2026-05-06 17:01:54.225 - N0011 espera grupo en portal Laboratorio (3/3)
+2026-05-06 17:01:54.225 - N0011 está cruzando el portal Laboratorio → UPSIDE DOWN
+2026-05-06 17:01:54.475 - N0001 ha salido de RADIO_WSQK
+2026-05-06 17:01:54.475 - N0001 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:54.762 - N0012 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:54.762 - N0012 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:54.762 - N0012 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:54.762 - N0012 ha entrado al Sótano Byers.
+2026-05-06 17:01:54.794 - N0007 regresa con sangre de Vecna.
+2026-05-06 17:01:54.794 - N0007 ha salido de CENTRO_COMERCIAL
+2026-05-06 17:01:54.794 - N0007 espera REGRESO en portal Centro Comercial
+2026-05-06 17:01:54.794 - N0007 regresa a Hawkins por el portal Centro Comercial
+2026-05-06 17:01:55.227 - N0010 está cruzando el portal Laboratorio → UPSIDE DOWN
+2026-05-06 17:01:55.227 - N0011 ha entrado a LABORATORIO
+2026-05-06 17:01:55.227 - N0011 ha llegado a LABORATORIO
+2026-05-06 17:01:55.551 - N0002 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:55.552 - N0002 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:55.552 - N0002 ha entrado al Sótano Byers.
+2026-05-06 17:01:55.798 - N0007 ha entrado a RADIO_WSQK
+2026-05-06 17:01:56.203 - N0012 ha salido de SOTANO_BYERS
+2026-05-06 17:01:56.216 - N0012 espera grupo en portal Alcantarillado (1/2)
+2026-05-06 17:01:56.239 - N0008 está cruzando el portal Laboratorio → UPSIDE DOWN
+2026-05-06 17:01:56.239 - N0010 ha entrado a LABORATORIO
+2026-05-06 17:01:56.239 - N0010 ha llegado a LABORATORIO
+2026-05-06 17:01:56.451 - N0013 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:56.451 - N0013 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:56.451 - N0013 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:56.451 - N0013 ha entrado al Sótano Byers.
+2026-05-06 17:01:56.524 - N0003 regresa con sangre de Vecna.
+2026-05-06 17:01:56.524 - N0003 ha salido de CENTRO_COMERCIAL
+2026-05-06 17:01:56.524 - N0003 espera REGRESO en portal Centro Comercial
+2026-05-06 17:01:56.524 - N0003 regresa a Hawkins por el portal Centro Comercial
+2026-05-06 17:01:56.828 - N0004 regresa con sangre de Vecna.
+2026-05-06 17:01:56.828 - N0004 ha salido de CENTRO_COMERCIAL
+2026-05-06 17:01:56.828 - N0004 espera REGRESO en portal Centro Comercial
+2026-05-06 17:01:57.240 - N0008 ha entrado a LABORATORIO
+2026-05-06 17:01:57.241 - N0008 ha llegado a LABORATORIO
+2026-05-06 17:01:57.336 - N0005 regresa con sangre de Vecna.
+2026-05-06 17:01:57.337 - N0005 ha salido de BOSQUE
+2026-05-06 17:01:57.337 - N0005 espera REGRESO en portal Bosque
+2026-05-06 17:01:57.339 - N0005 regresa a Hawkins por el portal Bosque
+2026-05-06 17:01:57.461 - N0002 ha salido de SOTANO_BYERS
+2026-05-06 17:01:57.525 - N0004 regresa a Hawkins por el portal Centro Comercial
+2026-05-06 17:01:57.526 - N0003 ha entrado a RADIO_WSQK
+2026-05-06 17:01:57.639 - N0009 regresa con sangre de Vecna.
+2026-05-06 17:01:57.639 - N0009 ha salido de BOSQUE
+2026-05-06 17:01:57.640 - N0009 espera REGRESO en portal Bosque
+2026-05-06 17:01:57.834 - D0000 ataca al niño N0008 (capturas: 0) en LABORATORIO
+2026-05-06 17:01:57.918 - N0013 ha salido de SOTANO_BYERS
+2026-05-06 17:01:57.950 - N0014 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:57.951 - N0014 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:57.951 - N0014 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:57.951 - N0014 ha entrado al Sótano Byers.
+2026-05-06 17:01:58.278 - N0006 regresa con sangre de Vecna.
+2026-05-06 17:01:58.278 - N0006 ha salido de CENTRO_COMERCIAL
+2026-05-06 17:01:58.278 - N0006 espera REGRESO en portal Centro Comercial
+2026-05-06 17:01:58.342 - N0009 regresa a Hawkins por el portal Bosque
+2026-05-06 17:01:58.344 - N0005 ha entrado a RADIO_WSQK
+2026-05-06 17:01:58.445 - D0000 ha fallado el ataque contra N0008
+2026-05-06 17:01:58.445 - D0000 ataca al niño N0008 (capturas: 0) en LABORATORIO
+2026-05-06 17:01:58.527 - N0004 ha entrado a RADIO_WSQK
+2026-05-06 17:01:58.527 - N0006 regresa a Hawkins por el portal Centro Comercial
+2026-05-06 17:01:58.595 - N0001 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:58.595 - N0001 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:58.596 - N0001 ha entrado al Sótano Byers.
+2026-05-06 17:01:58.979 - D0000 ha fallado el ataque contra N0008
+2026-05-06 17:01:58.981 - D0000 se aburre en ALCANTARILLADO. Esperando...
+2026-05-06 17:01:59.018 - N0011 regresa con sangre de Vecna.
+2026-05-06 17:01:59.018 - N0011 ha salido de LABORATORIO
+2026-05-06 17:01:59.018 - N0011 espera REGRESO en portal Laboratorio
+2026-05-06 17:01:59.029 - N0011 regresa a Hawkins por el portal Laboratorio
+2026-05-06 17:01:59.056 - N0007 ha salido de RADIO_WSQK
+2026-05-06 17:01:59.056 - N0007 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:59.246 - N0014 ha salido de SOTANO_BYERS
+2026-05-06 17:01:59.286 - N0015 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:01:59.286 - N0015 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:01:59.287 - N0015 ha entrado a SOTANO_BYERS
+2026-05-06 17:01:59.287 - N0015 ha entrado al Sótano Byers.
+2026-05-06 17:01:59.345 - N0009 ha entrado a RADIO_WSQK
+2026-05-06 17:01:59.529 - N0006 ha entrado a RADIO_WSQK
+2026-05-06 17:01:59.529 - N0002 espera grupo en portal Centro Comercial (1/4)
+2026-05-06 17:01:59.529 - N0013 espera grupo en portal Centro Comercial (2/4)
+2026-05-06 17:01:59.529 - N0014 espera grupo en portal Centro Comercial (3/4)
+2026-05-06 17:02:00.031 - N0011 ha entrado a RADIO_WSQK
+2026-05-06 17:02:00.260 - N0003 ha salido de RADIO_WSQK
+2026-05-06 17:02:00.260 - N0003 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:00.546 - N0016 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:00.546 - N0016 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:00.546 - N0016 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:00.546 - N0016 ha entrado al Sótano Byers.
+2026-05-06 17:02:00.579 - N0001 ha salido de SOTANO_BYERS
+2026-05-06 17:02:00.579 - N0001 espera grupo en portal Alcantarillado (2/2)
+2026-05-06 17:02:00.581 - N0012 está cruzando el portal Alcantarillado → UPSIDE DOWN
+2026-05-06 17:02:00.686 - N0015 ha salido de SOTANO_BYERS
+2026-05-06 17:02:00.686 - N0015 espera grupo en portal Centro Comercial (4/4)
+2026-05-06 17:02:00.687 - N0015 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:02:01.068 - N0010 regresa con sangre de Vecna.
+2026-05-06 17:02:01.068 - N0010 ha salido de LABORATORIO
+2026-05-06 17:02:01.068 - N0010 espera REGRESO en portal Laboratorio
+2026-05-06 17:02:01.069 - N0010 regresa a Hawkins por el portal Laboratorio
+2026-05-06 17:02:01.087 - N0017 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:01.087 - N0017 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:01.087 - N0017 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:01.087 - N0017 ha entrado al Sótano Byers.
+2026-05-06 17:02:01.270 - N0008 regresa con sangre de Vecna.
+2026-05-06 17:02:01.270 - N0008 ha salido de LABORATORIO
+2026-05-06 17:02:01.270 - N0008 espera REGRESO en portal Laboratorio
+2026-05-06 17:02:01.581 - N0012 ha entrado a ALCANTARILLADO
+2026-05-06 17:02:01.581 - N0012 ha llegado a ALCANTARILLADO
+2026-05-06 17:02:01.581 - N0001 está cruzando el portal Alcantarillado → UPSIDE DOWN
+2026-05-06 17:02:01.688 - N0015 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:02:01.688 - N0002 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:02:01.689 - N0015 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:02:01.898 - N0016 ha salido de SOTANO_BYERS
+2026-05-06 17:02:01.898 - N0016 espera grupo en portal Bosque (1/2)
+2026-05-06 17:02:01.934 - N0004 ha salido de RADIO_WSQK
+2026-05-06 17:02:01.934 - N0004 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:01.959 - N0005 ha salido de RADIO_WSQK
+2026-05-06 17:02:01.959 - N0005 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:01.978 - N0006 ha salido de RADIO_WSQK
+2026-05-06 17:02:01.979 - N0006 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:01.984 - N0018 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:01.984 - N0018 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:01.984 - N0018 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:01.985 - N0018 ha entrado al Sótano Byers.
+2026-05-06 17:02:02.069 - N0008 regresa a Hawkins por el portal Laboratorio
+2026-05-06 17:02:02.070 - N0010 ha entrado a RADIO_WSQK
+2026-05-06 17:02:02.512 - N0011 ha salido de RADIO_WSQK
+2026-05-06 17:02:02.512 - N0011 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:02.582 - N0001 ha entrado a ALCANTARILLADO
+2026-05-06 17:02:02.582 - N0001 ha llegado a ALCANTARILLADO
+2026-05-06 17:02:02.688 - N0013 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:02:02.692 - N0002 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:02:02.692 - N0002 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:02:03.038 - N0017 ha salido de SOTANO_BYERS
+2026-05-06 17:02:03.070 - N0008 ha entrado a RADIO_WSQK
+2026-05-06 17:02:03.070 - N0017 espera grupo en portal Laboratorio (1/3)
+2026-05-06 17:02:03.098 - N0018 ha salido de SOTANO_BYERS
+2026-05-06 17:02:03.098 - N0018 espera grupo en portal Laboratorio (2/3)
+2026-05-06 17:02:03.134 - N0019 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:03.134 - N0019 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:03.134 - N0019 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:03.134 - N0019 ha entrado al Sótano Byers.
+2026-05-06 17:02:03.265 - D0000 ataca al niño N0012 (capturas: 0) en ALCANTARILLADO
+2026-05-06 17:02:03.324 - N0009 ha salido de RADIO_WSQK
+2026-05-06 17:02:03.324 - N0009 ha entrado a CALLE_PRINCIPAL
+2026-05-06 17:02:03.403 - N0007 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:03.404 - N0007 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:03.404 - N0007 ha entrado al Sótano Byers.
+2026-05-06 17:02:03.692 - N0013 ha entrado a CENTRO_COMERCIAL
+2026-05-06 17:02:03.693 - N0014 está cruzando el portal Centro Comercial → UPSIDE DOWN
+2026-05-06 17:02:03.693 - N0013 ha llegado a CENTRO_COMERCIAL
+2026-05-06 17:02:04.078 - D0000 ha fallado el ataque contra N0012
+2026-05-06 17:02:04.078 - D0000 se aburre en BOSQUE. Esperando...
+2026-05-06 17:02:04.180 - N0003 ha salido de CALLE_PRINCIPAL
+2026-05-06 17:02:04.180 - N0003 ha entrado a SOTANO_BYERS
+2026-05-06 17:02:04.180 - N0003 ha entrado al Sótano Byers.
+2026-05-06 17:02:04.372 - === SIMULACIÓN FINALIZADA ===

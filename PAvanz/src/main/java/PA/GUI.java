@@ -82,47 +82,79 @@ public class GUI extends javax.swing.JFrame {
         
         // Portales
         mostrarPortales();
+        actualizarCrucePortales();
         
         // Demogorgones
-        mostrarDemogorgonsPorZona();        
+        mostrarDemogorgonsPorZona();    
         
     }
     
     // ==================== FIN CÓDIGO MANUAL ====================
     
     private void mostrarDemogorgonsPorZona() {
+        // Parámetro: número de demogorgons por línea
+        int porLinea = 2;
+
         // BOSQUE
         StringBuilder sbBosque = new StringBuilder();
+        int contador = 0;
         for (Demogorgon d : sistema.getDemogorgons()) {
             if (d.getZonaActual() == sistema.bosque) {
-                sbBosque.append(d.getDemogorgonId()).append(" (").append(d.getContadorCapturas()).append(")\n");
+                sbBosque.append(d.getDemogorgonId()).append("(").append(d.getContadorCapturas()).append(")");
+                contador++;
+                if (contador % porLinea == 0) {
+                    sbBosque.append("\n");
+                } else {
+                    sbBosque.append("   ");
+                }
             }
         }
         txtDemogorgonsBosque.setText(sbBosque.toString());
 
         // LABORATORIO
         StringBuilder sbLaboratorio = new StringBuilder();
+        contador = 0;
         for (Demogorgon d : sistema.getDemogorgons()) {
             if (d.getZonaActual() == sistema.laboratorio) {
-                sbLaboratorio.append(d.getDemogorgonId()).append(" (").append(d.getContadorCapturas()).append(")\n");
+                sbLaboratorio.append(d.getDemogorgonId()).append("(").append(d.getContadorCapturas()).append(")");
+                contador++;
+                if (contador % porLinea == 0) {
+                    sbLaboratorio.append("\n");
+                } else {
+                    sbLaboratorio.append("   ");
+                }
             }
         }
         txtDemogorgonsLaboratorio.setText(sbLaboratorio.toString());
 
         // CENTRO COMERCIAL
         StringBuilder sbCentro = new StringBuilder();
+        contador = 0;
         for (Demogorgon d : sistema.getDemogorgons()) {
             if (d.getZonaActual() == sistema.centroComercial) {
-                sbCentro.append(d.getDemogorgonId()).append(" (").append(d.getContadorCapturas()).append(")\n");
+                sbCentro.append(d.getDemogorgonId()).append("(").append(d.getContadorCapturas()).append(")");
+                contador++;
+                if (contador % porLinea == 0) {
+                    sbCentro.append("\n");
+                } else {
+                    sbCentro.append("   ");
+                }
             }
         }
         txtDemogorgonsCentro.setText(sbCentro.toString());
 
         // ALCANTARILLADO
         StringBuilder sbAlcantarillado = new StringBuilder();
+        contador = 0;
         for (Demogorgon d : sistema.getDemogorgons()) {
             if (d.getZonaActual() == sistema.alcantarillado) {
-                sbAlcantarillado.append(d.getDemogorgonId()).append(" (").append(d.getContadorCapturas()).append(")\n");
+                sbAlcantarillado.append(d.getDemogorgonId()).append("(").append(d.getContadorCapturas()).append(")");
+                contador++;
+                if (contador % porLinea == 0) {
+                    sbAlcantarillado.append("\n");
+                } else {
+                    sbAlcantarillado.append("   ");
+                }
             }
         }
         txtDemogorgonsAlcantarillado.setText(sbAlcantarillado.toString());
@@ -182,6 +214,60 @@ public class GUI extends javax.swing.JFrame {
     
     private void mostrarNinosEnColmena() {
         lblColmena.setText(String.valueOf(sistema.colmena.getCantidadNinos()));
+    }
+    
+    private void actualizarCrucePortales() {
+        // Portal Bosque
+        Portal portalBosque = sistema.getPortalBosque();
+        if (portalBosque.isCruzando() && portalBosque.getNinoCruzando() != null) {
+            String ninoId = portalBosque.getNinoCruzando().getNinoId();
+            if (portalBosque.getDireccionCruce() == Portal.DireccionCruce.IDA) {
+                lblCruzandoBosque.setText(ninoId + ">>");
+            } else {
+                lblCruzandoBosque.setText("<<" + ninoId);
+            }
+        } else {
+            lblCruzandoBosque.setText("LIBRE");
+        }
+
+        // Portal Laboratorio
+        Portal portalLaboratorio = sistema.getPortalLaboratorio();
+        if (portalLaboratorio.isCruzando() && portalLaboratorio.getNinoCruzando() != null) {
+            String ninoId = portalLaboratorio.getNinoCruzando().getNinoId();
+            if (portalLaboratorio.getDireccionCruce() == Portal.DireccionCruce.IDA) {
+                lblCruzandoLaboratorio.setText(ninoId + ">>");
+            } else {
+                lblCruzandoLaboratorio.setText("<<" + ninoId);
+            }
+        } else {
+            lblCruzandoLaboratorio.setText("LIBRE");
+        }
+
+        // Portal Centro Comercial
+        Portal portalCentro = sistema.getPortalCentroComercial();
+        if (portalCentro.isCruzando() && portalCentro.getNinoCruzando() != null) {
+            String ninoId = portalCentro.getNinoCruzando().getNinoId();
+            if (portalCentro.getDireccionCruce() == Portal.DireccionCruce.IDA) {
+                lblCruzandoCentro.setText(ninoId + ">>");
+            } else {
+                lblCruzandoCentro.setText("<<" + ninoId);
+            }
+        } else {
+            lblCruzandoCentro.setText("LIBRE");
+        }
+
+        // Portal Alcantarillado
+        Portal portalAlcantarillado = sistema.getPortalAlcantarillado();
+        if (portalAlcantarillado.isCruzando() && portalAlcantarillado.getNinoCruzando() != null) {
+            String ninoId = portalAlcantarillado.getNinoCruzando().getNinoId();
+            if (portalAlcantarillado.getDireccionCruce() == Portal.DireccionCruce.IDA) {
+                lblCruzandoAlcantarillado.setText(ninoId + ">>");
+            } else {
+                lblCruzandoAlcantarillado.setText("<<" + ninoId);
+            }
+        } else {
+            lblCruzandoAlcantarillado.setText("LIBRE");
+        }
     }
     
     public GUI() {
@@ -244,18 +330,18 @@ public class GUI extends javax.swing.JFrame {
         txtPortalBosqueSalida = new javax.swing.JTextArea();
         SrollBosqueV = new javax.swing.JScrollPane();
         txtPortalBosqueRegreso = new javax.swing.JTextArea();
-        lblPortalBosque = new javax.swing.JLabel();
-        lblPortalLaboratorio = new javax.swing.JLabel();
+        lblCruzandoBosque = new javax.swing.JLabel();
+        lblCruzandoLaboratorio = new javax.swing.JLabel();
         SrollLaboratorioV = new javax.swing.JScrollPane();
         txtPortalLaboratorioRegreso = new javax.swing.JTextArea();
         SrollLaboratorioI = new javax.swing.JScrollPane();
         txtPortalLaboratorioSalida = new javax.swing.JTextArea();
-        lblPortalCentroComercial = new javax.swing.JLabel();
+        lblCruzandoCentro = new javax.swing.JLabel();
         SrollCentroComercialV = new javax.swing.JScrollPane();
         txtPortalCentroRegreso = new javax.swing.JTextArea();
         SrollCentroComercialI = new javax.swing.JScrollPane();
         txtPortalCentroSalida = new javax.swing.JTextArea();
-        lblPortalAlcantarillado = new javax.swing.JLabel();
+        lblCruzandoAlcantarillado = new javax.swing.JLabel();
         SrollAlcantarilladoV = new javax.swing.JScrollPane();
         txtPortalAlcantarilladoRegreso = new javax.swing.JTextArea();
         SrollAlcantarilladoI = new javax.swing.JScrollPane();
@@ -347,7 +433,7 @@ public class GUI extends javax.swing.JFrame {
         ScrollSotanoByers.setBounds(0, 20, 260, 110);
 
         PanelHawkins.add(PanelSotanoByers);
-        PanelSotanoByers.setBounds(10, 180, 260, 130);
+        PanelSotanoByers.setBounds(9, 180, 260, 130);
 
         PanelRadioWSQK.setBackground(new java.awt.Color(51, 51, 51));
         PanelRadioWSQK.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
@@ -588,15 +674,15 @@ public class GUI extends javax.swing.JFrame {
         PanelPortales.add(SrollBosqueV);
         SrollBosqueV.setBounds(240, 40, 100, 100);
 
-        lblPortalBosque.setForeground(new java.awt.Color(0, 153, 0));
-        lblPortalBosque.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
-        PanelPortales.add(lblPortalBosque);
-        lblPortalBosque.setBounds(130, 70, 100, 30);
+        lblCruzandoBosque.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoBosque.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblCruzandoBosque);
+        lblCruzandoBosque.setBounds(130, 70, 100, 30);
 
-        lblPortalLaboratorio.setForeground(new java.awt.Color(0, 153, 0));
-        lblPortalLaboratorio.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
-        PanelPortales.add(lblPortalLaboratorio);
-        lblPortalLaboratorio.setBounds(130, 190, 100, 30);
+        lblCruzandoLaboratorio.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoLaboratorio.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblCruzandoLaboratorio);
+        lblCruzandoLaboratorio.setBounds(130, 190, 100, 30);
 
         SrollLaboratorioV.setBackground(new java.awt.Color(0, 0, 0));
         SrollLaboratorioV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
@@ -626,10 +712,10 @@ public class GUI extends javax.swing.JFrame {
         PanelPortales.add(SrollLaboratorioI);
         SrollLaboratorioI.setBounds(20, 160, 100, 100);
 
-        lblPortalCentroComercial.setForeground(new java.awt.Color(0, 153, 0));
-        lblPortalCentroComercial.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
-        PanelPortales.add(lblPortalCentroComercial);
-        lblPortalCentroComercial.setBounds(130, 310, 100, 30);
+        lblCruzandoCentro.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoCentro.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblCruzandoCentro);
+        lblCruzandoCentro.setBounds(130, 310, 100, 30);
 
         SrollCentroComercialV.setBackground(new java.awt.Color(0, 0, 0));
         SrollCentroComercialV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
@@ -659,10 +745,10 @@ public class GUI extends javax.swing.JFrame {
         PanelPortales.add(SrollCentroComercialI);
         SrollCentroComercialI.setBounds(20, 280, 100, 100);
 
-        lblPortalAlcantarillado.setForeground(new java.awt.Color(0, 153, 0));
-        lblPortalAlcantarillado.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
-        PanelPortales.add(lblPortalAlcantarillado);
-        lblPortalAlcantarillado.setBounds(130, 430, 100, 30);
+        lblCruzandoAlcantarillado.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoAlcantarillado.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblCruzandoAlcantarillado);
+        lblCruzandoAlcantarillado.setBounds(130, 430, 100, 30);
 
         SrollAlcantarilladoV.setBackground(new java.awt.Color(0, 0, 0));
         SrollAlcantarilladoV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
@@ -819,11 +905,11 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblCallePrincipal;
     private javax.swing.JLabel lblCentroComercial;
     private javax.swing.JLabel lblColmena;
+    private javax.swing.JLabel lblCruzandoAlcantarillado;
+    private javax.swing.JLabel lblCruzandoBosque;
+    private javax.swing.JLabel lblCruzandoCentro;
+    private javax.swing.JLabel lblCruzandoLaboratorio;
     private javax.swing.JLabel lblLaboratorio;
-    private javax.swing.JLabel lblPortalAlcantarillado;
-    private javax.swing.JLabel lblPortalBosque;
-    private javax.swing.JLabel lblPortalCentroComercial;
-    private javax.swing.JLabel lblPortalLaboratorio;
     private javax.swing.JLabel lblRadioWSQK;
     private javax.swing.JLabel lblSangre;
     private javax.swing.JLabel lblSotanoByers;

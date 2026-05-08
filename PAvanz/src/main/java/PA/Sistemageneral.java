@@ -44,6 +44,7 @@ public class Sistemageneral {
     private volatile boolean pausado = false;
     private long tiempoFinEvento = 0;
     private String nombreEventoActual = "";
+    private long tiempoProximoEvento = 0;
     
     public Sistemageneral() {
         
@@ -211,6 +212,14 @@ public class Sistemageneral {
         return sangre_total.get(); 
     }
     
+    public long getTiempoProximoEvento() {
+        return tiempoProximoEvento;
+    }
+
+    public void setTiempoProximoEvento(long tiempo) {
+        this.tiempoProximoEvento = tiempo;
+    }
+    
     public void lanzar_ciclo_eventos() {
         Thread gestor = new Thread(() -> {
             java.util.Random rnd = new java.util.Random();
@@ -225,6 +234,7 @@ public class Sistemageneral {
                     
                     //Espera aleatoria de 30 a 60 segundos
                     long espera = 30000 + rnd.nextInt(30001);
+                    tiempoProximoEvento = espera / 1000;
                     logger.log("Próximo evento en " + (espera / 1000) + " segundos");
                     System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
                     
@@ -234,6 +244,7 @@ public class Sistemageneral {
                         long paso = Math.min(1000, tiempoRestante);
                         Thread.sleep(paso);
                         tiempoRestante -= paso;
+                        tiempoProximoEvento = tiempoRestante / 1000;
                     }
 
                     // Si se pausó durante la espera, saltar este evento

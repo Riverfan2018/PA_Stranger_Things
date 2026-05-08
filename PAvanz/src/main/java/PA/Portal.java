@@ -17,6 +17,13 @@ public class Portal {
     
     private final List<Child> ninosEsperandoSalida;
     private final List<Child> ninosEsperandoRegreso;
+    private Child ninoCruzando = null;
+    private boolean cruzando = false;
+    public enum DireccionCruce {
+        IDA,      // Hawkins → Upside Down
+        VUELTA    // Upside Down → Hawkins
+    }
+    private DireccionCruce direccionCruce = null;
    
     private final ReentrantLock lock = new ReentrantLock(true);
     private final Condition esperagrupo = lock.newCondition();
@@ -85,9 +92,11 @@ public class Portal {
         // Cruce físico (Solo uno a la vez)
         pasounico.acquire(); 
         try {
+            setCruzando(nino, true, DireccionCruce.IDA);
             logger.log(nino.getNinoId() + " está cruzando el portal " + nombre + " → UPSIDE DOWN");
             System.out.println(nino.getNinoId() + " cruzando al Upside Down por " + nombre);
             sistema.sleepPausable(1000);
+            setCruzando(null, false, null);
         } finally {
             pasounico.release();
         }
@@ -125,10 +134,12 @@ public class Portal {
         try {
             // Doble check por si la captura fue en el microsegundo del acquire
             if (nino.retenidocontrasuvoluntad()) throw new InterruptedException();
-
+            
+            setCruzando(nino, true, DireccionCruce.VUELTA);
             logger.log(nino.getNinoId() + " regresa a Hawkins por el portal " + nombre);
             System.out.println(nino.getNinoId() + " regresa con prioridad por " + nombre);
             sistema.sleepPausable(1000);
+            setCruzando(null, false, null);
         } finally {
             pasounico.release();
 
@@ -219,11 +230,49 @@ public class Portal {
     }
     
     public void despertarPorLuz() {
-    lock.lock();
-    try {
-        esperagrupo.signalAll();
-    } finally {
-        lock.unlock();
+        lock.lock();
+        try {
+            esperagrupo.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
-}
+    
+    public void setCruzando(Child nino, boolean activo, DireccionCruce direccion) {
+        lock.lock();
+        try {
+            this.ninoCruzando = activo ? nino : null;
+            this.cruzando = activo;
+            this.direccionCruce = activo ? direccion : null;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public Child getNinoCruzando() {
+        lock.lock();
+        try {
+            return ninoCruzando;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean isCruzando() {
+        lock.lock();
+        try {
+            return cruzando;
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public DireccionCruce getDireccionCruce() {
+        lock.lock();
+        try {
+            return direccionCruce;
+        } finally {
+            lock.unlock();
+        }
+    }
 }

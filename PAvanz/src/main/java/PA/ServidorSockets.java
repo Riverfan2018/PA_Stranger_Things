@@ -103,6 +103,8 @@ public class ServidorSockets {
                 case "REANUDAR":
                     sistema.reanudar();
                     return "SISTEMA REANUDADO";
+                case "ESTA_PAUSADO":
+                    return sistema.isPausado() ? "PAUSADO" : "EJECUTANDO";
                 default:
                     return "COMANDO DESCONOCIDO. Comandos: RANKING, EVENTO, NINOS_HAWKINS, PORTALES, UPSIDE_DOWN, PAUSAR, REANUDAR, SALIR";
             }
@@ -133,7 +135,8 @@ public class ServidorSockets {
             } else if (sistema.red_mental_on) {
                 sb.append("RED_MENTAL|").append(sistema.getTiempoRestanteEvento());
             } else {
-                sb.append("NINGUNO|0");
+                long tiempoProximoEvento = sistema.getTiempoProximoEvento();
+                sb.append("NINGUNO|").append(tiempoProximoEvento);
             }
 
             return sb.toString();

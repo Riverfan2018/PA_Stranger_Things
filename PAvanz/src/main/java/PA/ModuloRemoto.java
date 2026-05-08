@@ -15,6 +15,9 @@ public class ModuloRemoto extends javax.swing.JFrame {
         initComponents();
         conectar();
         iniciarActualizador();
+        
+        setSize(1035, 670);
+        setMinimumSize(new java.awt.Dimension(1024, 640));
     }
     
     private void conectar() {
@@ -23,6 +26,17 @@ public class ModuloRemoto extends javax.swing.JFrame {
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
             System.out.println("Conectado al servidor");
+            // Consultar el estado actual de pausa
+            out.writeUTF("ESTA_PAUSADO");
+            out.flush();
+            String respuesta = in.readUTF();
+            pausado = respuesta.equals("PAUSADO");
+            // Actualizar el texto del botón según el estado real
+            if (pausado) {
+                btnPausa.setText("Reanudar");
+            } else {
+                btnPausa.setText("Pausar");
+            }
         } catch (IOException e) {
             System.out.println("ERROR: No se pudo conectar al servidor");
         }
@@ -42,6 +56,25 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private void actualizarTodo() {
         synchronized (socketLock) {
             if (out == null) return;
+            
+            // Verificar estado de pausa del servidor
+            try {
+                out.writeUTF("ESTA_PAUSADO");
+                out.flush();
+                String respuesta = in.readUTF();
+                boolean estadoServidor = respuesta.equals("PAUSADO");
+                if (estadoServidor != pausado) {
+                    pausado = estadoServidor;
+                    if (pausado) {
+                        btnPausa.setText("Reanudar");
+                    } else {
+                        btnPausa.setText("Pausar");
+                    }
+                }
+            } catch (IOException e) {
+                // Error, ignorar
+            }
+        
             DemogorgonDelMes();
             actualizarEvento();
             actualizarHawkins();
@@ -79,10 +112,35 @@ public class ModuloRemoto extends javax.swing.JFrame {
             out.flush();
             String linea = in.readUTF();
             if (linea != null && !linea.isEmpty()) {
-                txtRanking.setText(linea.replace(" | ", "\n"));
+                String[] partes = linea.split("\\|");
+
+                for (int i = 0; i < partes.length && i < 3; i++) {
+                    String ranking = partes[i].trim();
+                    switch (i) {
+                        case 0:
+                            lblEstadoRanking1.setText("1: " + ranking);
+                            break;
+                        case 1:
+                            lblEstadoRanking2.setText("2: " + ranking);
+                            break;
+                        case 2:
+                            lblEstadoRanking3.setText("3: " + ranking);
+                            break;
+                    }
+                }
+                // Si hay menos de 3 demogorgons, limpiar los restantes
+                if (partes.length < 1) lblEstadoRanking1.setText("1: ---");
+                if (partes.length < 2) lblEstadoRanking2.setText("2: ---");
+                if (partes.length < 3) lblEstadoRanking3.setText("3: ---");
+            } else {
+                lblEstadoRanking1.setText("1: ---");
+                lblEstadoRanking2.setText("2: ---");
+                lblEstadoRanking3.setText("3: ---");
             }
         } catch (IOException e) {
-            txtRanking.setText("Error");
+            lblEstadoRanking1.setText("1: Error");
+            lblEstadoRanking2.setText("2: Error");
+            lblEstadoRanking3.setText("3: Error");
         }
     }
     
@@ -98,32 +156,52 @@ public class ModuloRemoto extends javax.swing.JFrame {
                     String tipoEvento = partes[0];
                     String tiempoRestante = partes[1];
 
+                    // Mostrar tiempo restante
                     if (tipoEvento.equals("NINGUNO")) {
-                        lblEventoActual.setText("Evento: Sin evento activo");
-                        lblTiempoEvento.setText("Tiempo restante: --");
+                        lblEstadoEventoActual.setText("Ninguno");
+                        lblEstadoDescripcionActual.setText("Esperando...");
+                        lblEstadoTemporizadorActual.setText(tiempoRestante + "s");
                     } else {
-                        String nombreLegible = "";
+                        // Mostrar nombre del evento
+                        String nombreEvento = "";
+                        String descripcion = "";
                         switch (tipoEvento) {
-                            case "APAGÓN": nombreLegible = "Apagón del Laboratorio"; break;
-                            case "TORMENTA": nombreLegible = "Tormenta del Upside Down"; break;
-                            case "ELEVEN": nombreLegible = "Intervención de Eleven"; break;
-                            case "RED_MENTAL": nombreLegible = "Red Mental"; break;
-                            default: nombreLegible = tipoEvento;
+                            case "APAGÓN":
+                                nombreEvento = "Apagón del Laboratorio";
+                                descripcion = "Portales inutilizables, Demogorgons no se mueven";
+                                break;
+                            case "TORMENTA":
+                                nombreEvento = "Tormenta del Upside Down";
+                                descripcion = "Recolección de sangre x2, Demogorgons más rápidos";
+                                break;
+                            case "ELEVEN":
+                                nombreEvento = "Intervención de Eleven";
+                                descripcion = "Demogorgons paralizados, rescata niños de Colmena";
+                                break;
+                            case "RED_MENTAL":
+                                nombreEvento = "Red Mental";
+                                descripcion = "Demogorgons se agrupan en zona con más niños";
+                                break;
+                            default:
+                                nombreEvento = tipoEvento;
+                                descripcion = "Evento activo";
+                                break;
                         }
-                        lblEventoActual.setText("Evento: " + nombreLegible);
-                        lblTiempoEvento.setText("Tiempo restante: " + tiempoRestante + "s");
+                        lblEstadoEventoActual.setText(nombreEvento);
+                        lblEstadoDescripcionActual.setText(descripcion);
+                        lblEstadoTemporizadorActual.setText(tiempoRestante + "s");
                     }
-                } else {
-                    // Formato inesperado, ignorar
-                    System.err.println("Formato de evento inválido: " + linea);
                 }
             } else {
-                // Si la línea no tiene '|', probablemente es un mensaje del sistema. Ignorar.
-                System.err.println("Línea de evento inesperada: " + linea);
+                // Si no hay datos, mostrar estado por defecto
+                lblEstadoEventoActual.setText("Ninguno");
+                lblEstadoDescripcionActual.setText("Esperando...");
+                lblEstadoTemporizadorActual.setText("--");
             }
         } catch (IOException e) {
-            lblEventoActual.setText("Evento: Error de conexión");
-            lblTiempoEvento.setText("Tiempo restante: --");
+            lblEstadoEventoActual.setText("Error");
+            lblEstadoDescripcionActual.setText("Error de conexión");
+            lblEstadoTemporizadorActual.setText("--");
         }
     }
     
@@ -147,11 +225,31 @@ public class ModuloRemoto extends javax.swing.JFrame {
             out.writeUTF("PORTALES");
             out.flush();
             String linea = in.readUTF();
-            if (linea != null) {
-                txtEstadoPortales.setText(linea.replace(" | ", "\n"));
+            if (linea != null && !linea.isEmpty()) {
+                String[] partes = linea.split("\\|");
+
+                for (String parte : partes) {
+                    parte = parte.trim();
+                    if (parte.startsWith("Bosque:")) {
+                        String numero = parte.substring(parte.indexOf(":") + 1).trim();
+                        lblEstadoPortal1.setText("Portal 1: [ " + numero + " ] niños");
+                    } else if (parte.startsWith("Laboratorio:")) {
+                        String numero = parte.substring(parte.indexOf(":") + 1).trim();
+                        lblEstadoPortal2.setText("Portal 2: [ " + numero + " ] niños");
+                    } else if (parte.startsWith("Centro:")) {
+                        String numero = parte.substring(parte.indexOf(":") + 1).trim();
+                        lblEstadoPortal3.setText("Portal 3: [ " + numero + " ] niños");
+                    } else if (parte.startsWith("Alcantarillado:")) {
+                        String numero = parte.substring(parte.indexOf(":") + 1).trim();
+                        lblEstadoPortal4.setText("Portal 4: [ " + numero + " ] niños");
+                    }
+                }
             }
         } catch (IOException e) {
-            txtEstadoPortales.setText("Error");
+            lblEstadoPortal1.setText("Portal 1: Error");
+            lblEstadoPortal2.setText("Portal 2: Error");
+            lblEstadoPortal3.setText("Portal 3: Error");
+            lblEstadoPortal4.setText("Portal 4: Error");
         }
     }
     
@@ -165,25 +263,30 @@ public class ModuloRemoto extends javax.swing.JFrame {
                 String[] partes = linea.split("\\|");
                 if (partes.length >= 9) {
                     // Niños por zona
-                    txtEstadoUDNinos.setText(
-                        "Bosque: " + partes[0] + " niños\n" +
-                        "Laboratorio: " + partes[1] + " niños\n" +
-                        "Centro: " + partes[2] + " niños\n" +
-                        "Alcantarillado: " + partes[3] + " niños\n" +
-                        "Colmena: " + partes[4] + " niños"
-                    );
+                    lblEstadoBosqueNinos.setText("<html>Bosque: [ " + partes[0] + " ] <br>niños</html>");
+                    lblEstadoLaboratorioNinos.setText("<html>Laboratorio: [ " + partes[1] + " ] <br>niños</html>");
+                    lblEstadoCentroNinos.setText("<html>Centro: [ " + partes[2] + " ] <br>niños</html>");
+                    lblEstadoAlcantarillaNinos.setText("<html>Alcantarilla: [ " + partes[3] + " ] <br>niños</html>");
+                    lblEstadoColmenaNinos.setText("<html>Colmena: [ " + partes[4] + " ] <br>niños</html>");
+
                     // Demogorgons por zona
-                    txtEstadoUDDemogorgones.setText(
-                        "Bosque: " + partes[5] + " demos\n" +
-                        "Laboratorio: " + partes[6] + " demos\n" +
-                        "Centro: " + partes[7] + " demos\n" +
-                        "Alcantarillado: " + partes[8] + " demos"
-                    );
+                    lblEstadoBosqueDemos.setText("<html>Bosque: [ " + partes[5] + " ] <br>demogorgones</html>");
+                    lblEstadoLaboratorioDemos.setText("<html>Laboratorio: [ " + partes[6] + " ] <br>demogorgones</html>");
+                    lblEstadoCentroDemos.setText("<html>Centro: [ " + partes[7] + " ] <br>demogorgones</html>");
+                    lblEstadoAlcantarillaDemos.setText("<html>Alcantarilla: [ " + partes[8] + " ] <br>demogorgones</html>");
                 }
             }
         } catch (IOException e) {
-            txtEstadoUDNinos.setText("Error");
-            txtEstadoUDDemogorgones.setText("Error");
+            lblEstadoBosqueNinos.setText("<html>Bosque: [ Error ] <br>niños</html>");
+            lblEstadoLaboratorioNinos.setText("<html>Laboratorio: [ Error ] <br>niños</html>");
+            lblEstadoCentroNinos.setText("<html>Centro: [ Error ] <br>niños</html>");
+            lblEstadoAlcantarillaNinos.setText("<html>Alcantarilla: [ Error ] <br>niños</html>");
+            lblEstadoColmenaNinos.setText("<html>Colmena: [ Error ] <br>niños</html>");
+
+            lblEstadoBosqueDemos.setText("<html>Bosque: [ Error ] <br>demogorgones</html>");
+            lblEstadoLaboratorioDemos.setText("<html>Laboratorio: [ Error ] <br>demogorgones</html>");
+            lblEstadoCentroDemos.setText("<html>Centro: [ Error ] <br>demogorgones</html>");
+            lblEstadoAlcantarillaDemos.setText("<html>Alcantarilla: [ Error ] <br>demogorgones</html>");
         }
     }
     
@@ -202,207 +305,317 @@ public class ModuloRemoto extends javax.swing.JFrame {
         lblEstadoHawkins = new javax.swing.JLabel();
         PanelEstadoPortales = new javax.swing.JPanel();
         lblTituloEstadoPortales = new javax.swing.JLabel();
-        jScrollEstadoPortales = new javax.swing.JScrollPane();
-        txtEstadoPortales = new javax.swing.JTextArea();
+        lblEstadoPortal4 = new javax.swing.JLabel();
+        lblEstadoPortal1 = new javax.swing.JLabel();
+        lblEstadoPortal2 = new javax.swing.JLabel();
+        lblEstadoPortal3 = new javax.swing.JLabel();
         PanelEstadoUD = new javax.swing.JPanel();
         lblTituloEstadoUD = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtEstadoUDNinos = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtEstadoUDDemogorgones = new javax.swing.JTextArea();
+        lblEstadoColmenaNinos = new javax.swing.JLabel();
+        lblEstadoBosqueDemos = new javax.swing.JLabel();
+        lblEstadoLaboratorioNinos = new javax.swing.JLabel();
+        lblEstadoLaboratorioDemos = new javax.swing.JLabel();
+        lblEstadoCentroNinos = new javax.swing.JLabel();
+        lblEstadoCentroDemos = new javax.swing.JLabel();
+        lblEstadoAlcantarillaNinos = new javax.swing.JLabel();
+        lblEstadoAlcantarillaDemos = new javax.swing.JLabel();
+        lblEstadoBosqueNinos = new javax.swing.JLabel();
         PanelRankingDemogorgones = new javax.swing.JPanel();
-        ScrollPanelRanking = new javax.swing.JScrollPane();
-        txtRanking = new javax.swing.JTextArea();
-        lblRanking = new javax.swing.JLabel();
+        lblTituloRanking2 = new javax.swing.JLabel();
+        lblEstadoRanking3 = new javax.swing.JLabel();
+        lblEstadoRanking1 = new javax.swing.JLabel();
+        lblEstadoRanking2 = new javax.swing.JLabel();
+        lblTituloRanking1 = new javax.swing.JLabel();
         PanelEvento = new javax.swing.JPanel();
-        lblEvento = new javax.swing.JLabel();
-        lblEventoActual = new javax.swing.JLabel();
-        lblTiempoEvento = new javax.swing.JLabel();
+        lblTituloEvento2 = new javax.swing.JLabel();
+        lblTituloEvento1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        lblEstadoTemporizadorActual = new javax.swing.JLabel();
+        lblEstadoEventoActual = new javax.swing.JLabel();
+        lblEstadoDescripcionActual = new javax.swing.JLabel();
         LabelModuloRemoto = new javax.swing.JLabel();
         btnPausa = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(null);
 
-        PanelGeneral.setBackground(new java.awt.Color(102, 102, 102));
+        PanelGeneral.setBackground(new java.awt.Color(51, 51, 51));
+        PanelGeneral.setLayout(null);
 
-        PanelResumenHawkins.setBackground(new java.awt.Color(153, 153, 153));
+        PanelResumenHawkins.setBackground(new java.awt.Color(51, 51, 51));
+        PanelResumenHawkins.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelResumenHawkins.setLayout(null);
 
-        lblTituloResumenHawkins.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTituloResumenHawkins.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloResumenHawkins.setForeground(new java.awt.Color(204, 0, 0));
         lblTituloResumenHawkins.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblTituloResumenHawkins.setText("Resumen Hawkins");
+        PanelResumenHawkins.add(lblTituloResumenHawkins);
+        lblTituloResumenHawkins.setBounds(10, 10, 250, 50);
 
-        lblEstadoHawkins.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblEstadoHawkins.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoHawkins.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoHawkins.setForeground(new java.awt.Color(255, 255, 255));
         lblEstadoHawkins.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblEstadoHawkins.setText("Total Niños en Hawkins: [/n]");
+        lblEstadoHawkins.setText("Total Niños en Hawkins: [n]");
+        lblEstadoHawkins.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelResumenHawkins.add(lblEstadoHawkins);
+        lblEstadoHawkins.setBounds(10, 68, 250, 90);
 
-        javax.swing.GroupLayout PanelResumenHawkinsLayout = new javax.swing.GroupLayout(PanelResumenHawkins);
-        PanelResumenHawkins.setLayout(PanelResumenHawkinsLayout);
-        PanelResumenHawkinsLayout.setHorizontalGroup(
-            PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelResumenHawkinsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTituloResumenHawkins, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblEstadoHawkins, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        PanelResumenHawkinsLayout.setVerticalGroup(
-            PanelResumenHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelResumenHawkinsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTituloResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblEstadoHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
+        PanelGeneral.add(PanelResumenHawkins);
+        PanelResumenHawkins.setBounds(10, 20, 270, 170);
 
-        PanelEstadoPortales.setBackground(new java.awt.Color(153, 153, 153));
+        PanelEstadoPortales.setBackground(new java.awt.Color(51, 51, 51));
+        PanelEstadoPortales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoPortales.setLayout(null);
 
-        lblTituloEstadoPortales.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTituloEstadoPortales.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloEstadoPortales.setForeground(new java.awt.Color(204, 0, 0));
         lblTituloEstadoPortales.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTituloEstadoPortales.setText("Estado de Portales");
+        lblTituloEstadoPortales.setText("ESTADO PORTALES");
+        PanelEstadoPortales.add(lblTituloEstadoPortales);
+        lblTituloEstadoPortales.setBounds(10, 10, 250, 50);
 
-        txtEstadoPortales.setBackground(new java.awt.Color(204, 204, 204));
-        txtEstadoPortales.setColumns(10);
-        txtEstadoPortales.setRows(5);
-        jScrollEstadoPortales.setViewportView(txtEstadoPortales);
+        lblEstadoPortal4.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal4.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoPortal4.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoPortal4.setText("Portal 4: [ n ] niños");
+        lblEstadoPortal4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoPortales.add(lblEstadoPortal4);
+        lblEstadoPortal4.setBounds(10, 330, 250, 60);
 
-        javax.swing.GroupLayout PanelEstadoPortalesLayout = new javax.swing.GroupLayout(PanelEstadoPortales);
-        PanelEstadoPortales.setLayout(PanelEstadoPortalesLayout);
-        PanelEstadoPortalesLayout.setHorizontalGroup(
-            PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelEstadoPortalesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTituloEstadoPortales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollEstadoPortales))
-                .addContainerGap())
-        );
-        PanelEstadoPortalesLayout.setVerticalGroup(
-            PanelEstadoPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelEstadoPortalesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTituloEstadoPortales, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollEstadoPortales, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
-        );
+        lblEstadoPortal1.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal1.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoPortal1.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoPortal1.setText("Portal 1: [ n ] niños");
+        lblEstadoPortal1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoPortales.add(lblEstadoPortal1);
+        lblEstadoPortal1.setBounds(10, 68, 250, 60);
 
-        PanelEstadoUD.setBackground(new java.awt.Color(153, 153, 153));
+        lblEstadoPortal2.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal2.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoPortal2.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoPortal2.setText("Portal 2: [ n ] niños");
+        lblEstadoPortal2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoPortales.add(lblEstadoPortal2);
+        lblEstadoPortal2.setBounds(10, 150, 250, 60);
 
-        lblTituloEstadoUD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblEstadoPortal3.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal3.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoPortal3.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoPortal3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoPortal3.setText("Portal 3: [ n ] niños");
+        lblEstadoPortal3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoPortales.add(lblEstadoPortal3);
+        lblEstadoPortal3.setBounds(10, 240, 250, 60);
+
+        PanelGeneral.add(PanelEstadoPortales);
+        PanelEstadoPortales.setBounds(10, 210, 270, 410);
+
+        PanelEstadoUD.setBackground(new java.awt.Color(51, 51, 51));
+        PanelEstadoUD.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.setLayout(null);
+
+        lblTituloEstadoUD.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloEstadoUD.setForeground(new java.awt.Color(204, 0, 0));
         lblTituloEstadoUD.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTituloEstadoUD.setText("Ubicaciónes Upside Down");
+        lblTituloEstadoUD.setText("UBICACIONES UPSIDE DOWN");
+        PanelEstadoUD.add(lblTituloEstadoUD);
+        lblTituloEstadoUD.setBounds(10, 10, 390, 50);
 
-        txtEstadoUDNinos.setBackground(new java.awt.Color(204, 204, 204));
-        txtEstadoUDNinos.setColumns(10);
-        txtEstadoUDNinos.setRows(5);
-        jScrollPane1.setViewportView(txtEstadoUDNinos);
+        lblEstadoColmenaNinos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoColmenaNinos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoColmenaNinos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoColmenaNinos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoColmenaNinos.setText("<html>Colmena: [ n ] <br>niños<html>");
+        lblEstadoColmenaNinos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoColmenaNinos);
+        lblEstadoColmenaNinos.setBounds(10, 380, 200, 60);
 
-        txtEstadoUDDemogorgones.setBackground(new java.awt.Color(204, 204, 204));
-        txtEstadoUDDemogorgones.setColumns(10);
-        txtEstadoUDDemogorgones.setRows(5);
-        jScrollPane2.setViewportView(txtEstadoUDDemogorgones);
+        lblEstadoBosqueDemos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoBosqueDemos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoBosqueDemos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoBosqueDemos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoBosqueDemos.setText("<html>Bosque: [ n ] <br>demogorgones<html>");
+        lblEstadoBosqueDemos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoBosqueDemos);
+        lblEstadoBosqueDemos.setBounds(210, 60, 200, 60);
 
-        javax.swing.GroupLayout PanelEstadoUDLayout = new javax.swing.GroupLayout(PanelEstadoUD);
-        PanelEstadoUD.setLayout(PanelEstadoUDLayout);
-        PanelEstadoUDLayout.setHorizontalGroup(
-            PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelEstadoUDLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTituloEstadoUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(PanelEstadoUDLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        PanelEstadoUDLayout.setVerticalGroup(
-            PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelEstadoUDLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTituloEstadoUD, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PanelEstadoUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
-                .addContainerGap(46, Short.MAX_VALUE))
-        );
+        lblEstadoLaboratorioNinos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoLaboratorioNinos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoLaboratorioNinos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoLaboratorioNinos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoLaboratorioNinos.setText("<html>Laboratorio: [ n ] <br>niños<html>");
+        lblEstadoLaboratorioNinos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoLaboratorioNinos);
+        lblEstadoLaboratorioNinos.setBounds(10, 140, 200, 60);
 
-        PanelRankingDemogorgones.setBackground(new java.awt.Color(153, 153, 153));
+        lblEstadoLaboratorioDemos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoLaboratorioDemos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoLaboratorioDemos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoLaboratorioDemos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoLaboratorioDemos.setText("<html>Laboratorio: [ n ] <br>demogorgones<html>");
+        lblEstadoLaboratorioDemos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoLaboratorioDemos);
+        lblEstadoLaboratorioDemos.setBounds(210, 140, 200, 60);
 
-        txtRanking.setBackground(new java.awt.Color(204, 204, 204));
-        txtRanking.setColumns(10);
-        txtRanking.setRows(5);
-        ScrollPanelRanking.setViewportView(txtRanking);
+        lblEstadoCentroNinos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoCentroNinos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoCentroNinos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoCentroNinos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoCentroNinos.setText("<html>Centro: [ n ] <br>niños<html>");
+        lblEstadoCentroNinos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoCentroNinos);
+        lblEstadoCentroNinos.setBounds(10, 220, 200, 60);
 
-        lblRanking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblRanking.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblRanking.setText("Ranking Demogorgones");
+        lblEstadoCentroDemos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoCentroDemos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoCentroDemos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoCentroDemos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoCentroDemos.setText("<html>Centro: [ n ] <br>demogorgones<html>");
+        lblEstadoCentroDemos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoCentroDemos);
+        lblEstadoCentroDemos.setBounds(210, 220, 200, 60);
 
-        javax.swing.GroupLayout PanelRankingDemogorgonesLayout = new javax.swing.GroupLayout(PanelRankingDemogorgones);
-        PanelRankingDemogorgones.setLayout(PanelRankingDemogorgonesLayout);
-        PanelRankingDemogorgonesLayout.setHorizontalGroup(
-            PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelRankingDemogorgonesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ScrollPanelRanking)
-                    .addComponent(lblRanking, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        PanelRankingDemogorgonesLayout.setVerticalGroup(
-            PanelRankingDemogorgonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRankingDemogorgonesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblRanking, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ScrollPanelRanking, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        lblEstadoAlcantarillaNinos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoAlcantarillaNinos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoAlcantarillaNinos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoAlcantarillaNinos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoAlcantarillaNinos.setText("<html>Alcantarilla: [ n ] <br>niños<html>");
+        lblEstadoAlcantarillaNinos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoAlcantarillaNinos);
+        lblEstadoAlcantarillaNinos.setBounds(10, 300, 200, 60);
 
-        PanelEvento.setBackground(new java.awt.Color(153, 153, 153));
+        lblEstadoAlcantarillaDemos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoAlcantarillaDemos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoAlcantarillaDemos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoAlcantarillaDemos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoAlcantarillaDemos.setText("<html>Alcantarilla: [ n ] <br>demogorgones<html>");
+        lblEstadoAlcantarillaDemos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoAlcantarillaDemos);
+        lblEstadoAlcantarillaDemos.setBounds(210, 300, 200, 60);
 
-        lblEvento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblEvento.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblEvento.setText("Evento Activo");
+        lblEstadoBosqueNinos.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoBosqueNinos.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoBosqueNinos.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoBosqueNinos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblEstadoBosqueNinos.setText("<html>Bosque: [ n ] <br>niños<html>");
+        lblEstadoBosqueNinos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEstadoUD.add(lblEstadoBosqueNinos);
+        lblEstadoBosqueNinos.setBounds(10, 60, 200, 60);
 
-        lblEventoActual.setBackground(new java.awt.Color(255, 255, 255));
-        lblEventoActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblEventoActual.setText("SIN INICIALIZAR");
+        PanelGeneral.add(PanelEstadoUD);
+        PanelEstadoUD.setBounds(299, 106, 420, 460);
 
-        lblTiempoEvento.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTiempoEvento.setText("SIN INICIALIZAR");
+        PanelRankingDemogorgones.setBackground(new java.awt.Color(51, 51, 51));
+        PanelRankingDemogorgones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelRankingDemogorgones.setLayout(null);
 
-        javax.swing.GroupLayout PanelEventoLayout = new javax.swing.GroupLayout(PanelEvento);
-        PanelEvento.setLayout(PanelEventoLayout);
-        PanelEventoLayout.setHorizontalGroup(
-            PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelEventoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTiempoEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblEventoActual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        PanelEventoLayout.setVerticalGroup(
-            PanelEventoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelEventoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblEventoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblTiempoEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
+        lblTituloRanking2.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloRanking2.setForeground(new java.awt.Color(204, 0, 0));
+        lblTituloRanking2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloRanking2.setText("DEMOGORGONES");
+        PanelRankingDemogorgones.add(lblTituloRanking2);
+        lblTituloRanking2.setBounds(10, 40, 240, 30);
 
-        LabelModuloRemoto.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblEstadoRanking3.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking3.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoRanking3.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoRanking3.setText("3: ");
+        lblEstadoRanking3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelRankingDemogorgones.add(lblEstadoRanking3);
+        lblEstadoRanking3.setBounds(0, 180, 260, 50);
+
+        lblEstadoRanking1.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking1.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoRanking1.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoRanking1.setText("1: ");
+        lblEstadoRanking1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelRankingDemogorgones.add(lblEstadoRanking1);
+        lblEstadoRanking1.setBounds(0, 80, 260, 50);
+
+        lblEstadoRanking2.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking2.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoRanking2.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoRanking2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoRanking2.setText("2: ");
+        lblEstadoRanking2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelRankingDemogorgones.add(lblEstadoRanking2);
+        lblEstadoRanking2.setBounds(0, 130, 260, 50);
+
+        lblTituloRanking1.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloRanking1.setForeground(new java.awt.Color(204, 0, 0));
+        lblTituloRanking1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloRanking1.setText("ranking");
+        PanelRankingDemogorgones.add(lblTituloRanking1);
+        lblTituloRanking1.setBounds(10, 20, 240, 30);
+
+        PanelGeneral.add(PanelRankingDemogorgones);
+        PanelRankingDemogorgones.setBounds(740, 20, 260, 230);
+
+        PanelEvento.setBackground(new java.awt.Color(51, 51, 51));
+        PanelEvento.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        PanelEvento.setLayout(null);
+
+        lblTituloEvento2.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloEvento2.setForeground(new java.awt.Color(204, 0, 0));
+        lblTituloEvento2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloEvento2.setText("ACTIVo");
+        PanelEvento.add(lblTituloEvento2);
+        lblTituloEvento2.setBounds(10, 40, 240, 30);
+
+        lblTituloEvento1.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+        lblTituloEvento1.setForeground(new java.awt.Color(204, 0, 0));
+        lblTituloEvento1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloEvento1.setText("EVENTO GLObal");
+        PanelEvento.add(lblTituloEvento1);
+        lblTituloEvento1.setBounds(10, 20, 240, 30);
+
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 0), 4));
+        jPanel1.setLayout(null);
+
+        lblEstadoTemporizadorActual.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoTemporizadorActual.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoTemporizadorActual.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoTemporizadorActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoTemporizadorActual.setText("-");
+        jPanel1.add(lblEstadoTemporizadorActual);
+        lblEstadoTemporizadorActual.setBounds(0, 160, 260, 80);
+
+        lblEstadoEventoActual.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoEventoActual.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoEventoActual.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoEventoActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoEventoActual.setText("Ninguno");
+        jPanel1.add(lblEstadoEventoActual);
+        lblEstadoEventoActual.setBounds(0, 0, 260, 80);
+
+        lblEstadoDescripcionActual.setBackground(new java.awt.Color(255, 255, 255));
+        lblEstadoDescripcionActual.setFont(new java.awt.Font("Britannic Bold", 0, 18)); // NOI18N
+        lblEstadoDescripcionActual.setForeground(new java.awt.Color(255, 255, 255));
+        lblEstadoDescripcionActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoDescripcionActual.setText("Nada");
+        jPanel1.add(lblEstadoDescripcionActual);
+        lblEstadoDescripcionActual.setBounds(0, 80, 260, 80);
+
+        PanelEvento.add(jPanel1);
+        jPanel1.setBounds(0, 80, 260, 270);
+
+        PanelGeneral.add(PanelEvento);
+        PanelEvento.setBounds(740, 270, 260, 350);
+
+        LabelModuloRemoto.setFont(new java.awt.Font("Stencil", 0, 36)); // NOI18N
+        LabelModuloRemoto.setForeground(new java.awt.Color(204, 0, 0));
         LabelModuloRemoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabelModuloRemoto.setText("Modulo Remoto");
+        PanelGeneral.add(LabelModuloRemoto);
+        LabelModuloRemoto.setBounds(300, 20, 420, 70);
 
         btnPausa.setBackground(new java.awt.Color(204, 0, 0));
         btnPausa.setForeground(new java.awt.Color(255, 255, 255));
@@ -412,59 +625,11 @@ public class ModuloRemoto extends javax.swing.JFrame {
                 btnPausaActionPerformed(evt);
             }
         });
+        PanelGeneral.add(btnPausa);
+        btnPausa.setBounds(299, 580, 420, 40);
 
-        javax.swing.GroupLayout PanelGeneralLayout = new javax.swing.GroupLayout(PanelGeneral);
-        PanelGeneral.setLayout(PanelGeneralLayout);
-        PanelGeneralLayout.setHorizontalGroup(
-            PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelGeneralLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PanelEstadoPortales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnPausa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelEstadoUD, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PanelRankingDemogorgones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PanelEvento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        PanelGeneralLayout.setVerticalGroup(
-            PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelGeneralLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelGeneralLayout.createSequentialGroup()
-                        .addComponent(LabelModuloRemoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(PanelEstadoUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelGeneralLayout.createSequentialGroup()
-                        .addComponent(PanelRankingDemogorgones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PanelEvento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PanelGeneralLayout.createSequentialGroup()
-                        .addComponent(PanelResumenHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PanelEstadoPortales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(18, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PanelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PanelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(PanelGeneral);
+        PanelGeneral.setBounds(0, 0, 1020, 650);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -516,22 +681,34 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private javax.swing.JPanel PanelGeneral;
     private javax.swing.JPanel PanelRankingDemogorgones;
     private javax.swing.JPanel PanelResumenHawkins;
-    private javax.swing.JScrollPane ScrollPanelRanking;
     private javax.swing.JButton btnPausa;
-    private javax.swing.JScrollPane jScrollEstadoPortales;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblEstadoAlcantarillaDemos;
+    private javax.swing.JLabel lblEstadoAlcantarillaNinos;
+    private javax.swing.JLabel lblEstadoBosqueDemos;
+    private javax.swing.JLabel lblEstadoBosqueNinos;
+    private javax.swing.JLabel lblEstadoCentroDemos;
+    private javax.swing.JLabel lblEstadoCentroNinos;
+    private javax.swing.JLabel lblEstadoColmenaNinos;
+    private javax.swing.JLabel lblEstadoDescripcionActual;
+    private javax.swing.JLabel lblEstadoEventoActual;
     private javax.swing.JLabel lblEstadoHawkins;
-    private javax.swing.JLabel lblEvento;
-    private javax.swing.JLabel lblEventoActual;
-    private javax.swing.JLabel lblRanking;
-    private javax.swing.JLabel lblTiempoEvento;
+    private javax.swing.JLabel lblEstadoLaboratorioDemos;
+    private javax.swing.JLabel lblEstadoLaboratorioNinos;
+    private javax.swing.JLabel lblEstadoPortal1;
+    private javax.swing.JLabel lblEstadoPortal2;
+    private javax.swing.JLabel lblEstadoPortal3;
+    private javax.swing.JLabel lblEstadoPortal4;
+    private javax.swing.JLabel lblEstadoRanking1;
+    private javax.swing.JLabel lblEstadoRanking2;
+    private javax.swing.JLabel lblEstadoRanking3;
+    private javax.swing.JLabel lblEstadoTemporizadorActual;
     private javax.swing.JLabel lblTituloEstadoPortales;
     private javax.swing.JLabel lblTituloEstadoUD;
+    private javax.swing.JLabel lblTituloEvento1;
+    private javax.swing.JLabel lblTituloEvento2;
+    private javax.swing.JLabel lblTituloRanking1;
+    private javax.swing.JLabel lblTituloRanking2;
     private javax.swing.JLabel lblTituloResumenHawkins;
-    private javax.swing.JTextArea txtEstadoPortales;
-    private javax.swing.JTextArea txtEstadoUDDemogorgones;
-    private javax.swing.JTextArea txtEstadoUDNinos;
-    private javax.swing.JTextArea txtRanking;
     // End of variables declaration//GEN-END:variables
 }

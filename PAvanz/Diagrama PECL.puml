@@ -1,0 +1,335 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class PA.Child {
+    - id : String
+    - sistema : Sistemageneral
+    - capturado : boolean
+    - logger : Logger
+    + Child(id : String, sistema : Sistemageneral)
+    + run() : void
+    - esperarenzona(tiempo : long) : void
+    - esperarrescate() : void
+    + setcapturado(estado : boolean) : void
+    + retenidocontrasuvoluntad() : boolean
+    - random(min : int, max : int) : long
+    + getNinoId() : String
+}
+
+java.lang.Thread <|-- PA.Child
+
+
+class PA.Colmena {
+    - ninosCapturados : List<Child>
+    - lock : ReentrantLock
+    - logger : Logger
+    + Colmena()
+    + entrar(nino : Child) : void
+    + salir(nino : Child) : void
+    + hayNinos() : boolean
+    + seleccionarNinoAleatorio() : Child
+    + getCantidadNinos() : int
+    + getNinosCapturados() : List<Child>
+}
+
+class PA.Demogorgon {
+    - id : String
+    - sistema : Sistemageneral
+    - zonaactual : Zona
+    - contadorCapturas : int
+    - logger : Logger
+    + Demogorgon(id : String, sistema : Sistemageneral)
+    + getDemogorgonId() : String
+    + getContadorCapturas() : int
+    + getZonaActual() : Zona
+    + incrementarCapturas() : void
+    + run() : void
+    - chequear_paralisis() : void
+    - darle_caña(victima : Child) : void
+    - secuestrar(victima : Child) : void
+    - patear_calle() : void
+}
+java.lang.Thread <|-- PA.Demogorgon
+
+class PA.GUI {
+    - sistema : Sistemageneral
+    - LabelCallePrincipal : javax.swing.JLabel
+    - LabelHawkins : javax.swing.JLabel
+    - LabelRadioWSQK : javax.swing.JLabel
+    - LabelSotanoByers : javax.swing.JLabel
+    - PanelCallePrincipal : javax.swing.JPanel
+    - PanelGeneral : javax.swing.JPanel
+    - PanelHawkins : javax.swing.JPanel
+    - PanelPortales : javax.swing.JPanel
+    - PanelRadioWSQK : javax.swing.JPanel
+    - PanelSotanoByers : javax.swing.JPanel
+    - btnAbrirRemoto : javax.swing.JButton
+    - jLabel1 : javax.swing.JLabel
+    - jLabel3 : javax.swing.JLabel
+    - jLabel4 : javax.swing.JLabel
+    - jLabel8 : javax.swing.JLabel
+    - jPanel12 : javax.swing.JPanel
+    - jPanel14 : javax.swing.JPanel
+    - jPanel18 : javax.swing.JPanel
+    - jPanel2 : javax.swing.JPanel
+    - jPanel21 : javax.swing.JPanel
+    - jPanel22 : javax.swing.JPanel
+    - jPanel23 : javax.swing.JPanel
+    - jPanel24 : javax.swing.JPanel
+    - jPanel25 : javax.swing.JPanel
+    - jPanel5 : javax.swing.JPanel
+    - jPanel9 : javax.swing.JPanel
+    - jScrollPane1 : javax.swing.JScrollPane
+    - jScrollPane10 : javax.swing.JScrollPane
+    - jScrollPane11 : javax.swing.JScrollPane
+    - jScrollPane12 : javax.swing.JScrollPane
+    - jScrollPane13 : javax.swing.JScrollPane
+    - jScrollPane14 : javax.swing.JScrollPane
+    - jScrollPane15 : javax.swing.JScrollPane
+    - jScrollPane16 : javax.swing.JScrollPane
+    - jScrollPane17 : javax.swing.JScrollPane
+    - jScrollPane18 : javax.swing.JScrollPane
+    - jScrollPane19 : javax.swing.JScrollPane
+    - jScrollPane2 : javax.swing.JScrollPane
+    - jScrollPane20 : javax.swing.JScrollPane
+    - jScrollPane21 : javax.swing.JScrollPane
+    - jScrollPane22 : javax.swing.JScrollPane
+    - jScrollPane23 : javax.swing.JScrollPane
+    - jScrollPane24 : javax.swing.JScrollPane
+    - jScrollPane3 : javax.swing.JScrollPane
+    - jScrollPane4 : javax.swing.JScrollPane
+    - jScrollPane5 : javax.swing.JScrollPane
+    - jScrollPane6 : javax.swing.JScrollPane
+    - jScrollPane7 : javax.swing.JScrollPane
+    - jScrollPane8 : javax.swing.JScrollPane
+    - jScrollPane9 : javax.swing.JScrollPane
+    - lblEventoActual : javax.swing.JLabel
+    - txtAlcantarillado : javax.swing.JTextArea
+    - txtBosque : javax.swing.JTextArea
+    - txtCallePrincipal : javax.swing.JTextArea
+    - txtCentroComercial : javax.swing.JTextArea
+    - txtColmena : javax.swing.JTextArea
+    - txtDemogorgonsAlcantarillado : javax.swing.JTextArea
+    - txtDemogorgonsBosque : javax.swing.JTextArea
+    - txtDemogorgonsCentro : javax.swing.JTextArea
+    - txtDemogorgonsLaboratorio : javax.swing.JTextArea
+    - txtLaboratorio : javax.swing.JTextArea
+    - txtPortalAlcantarilladoRegreso : javax.swing.JTextArea
+    - txtPortalAlcantarilladoSalida : javax.swing.JTextArea
+    - txtPortalBosqueRegreso : javax.swing.JTextArea
+    - txtPortalBosqueSalida : javax.swing.JTextArea
+    - txtPortalCentroRegreso : javax.swing.JTextArea
+    - txtPortalCentroSalida : javax.swing.JTextArea
+    - txtPortalLaboratorioRegreso : javax.swing.JTextArea
+    - txtPortalLaboratorioSalida : javax.swing.JTextArea
+    - txtRadioWSQK : javax.swing.JTextArea
+    - txtRanking : javax.swing.JTextArea
+    - txtSotanoByers : javax.swing.JTextArea
+
+    + GUI(sistema : Sistemageneral)
+    + GUI()
+    - iniciarActualizador() : void
+    - actualizarGUI() : void
+    - mostrarDemogorgonsPorZona() : void
+    - DemogorgonDelMes() : void
+    - mostrarPortales() : void
+    - mostrarNiñosEnCola(ninos : List<Child>, textArea : JTextArea, direccion : String) : void
+    - mostrarNinosEnZona(zona : Zona, textArea : JTextArea) : void
+    - mostrarNinosEnColmena() : void
+    - initComponents() : void
+}
+
+javax.swing.JFrame <|-- PA.GUI
+
+
+class PA.Logger {
+    - {static} instancia : Logger
+    - writer : PrintWriter
+    - lock : Object
+    - Logger()
+    + {static} getInstance() : Logger
+    + log(mensaje : String) : void
+    + cerrar() : void
+}
+
+class PA.Main {
+    + {static} main(args : String[]) : void
+}
+
+class PA.ModuloRemoto {
+    - socket : Socket
+    - out : PrintWriter
+    - in : BufferedReader
+    - servidorIP : String = "localhost"
+    - puerto : int = 8080
+    - socketLock : Object
+    - pausado : boolean
+    --
+    + ModuloRemoto()
+    - conectar() : void
+    - iniciarActualizador() : void
+    - actualizarTodo() : void
+    - enviarComando(comando : String) : void
+    + pausar() : void
+    + reanudar() : void
+    - togglePausa() : void
+    - DemogorgonDelMes() : void
+    - actualizarEvento() : void
+    - actualizarHawkins() : void
+    - actualizarPortales() : void
+    - actualizarUpsideDown() : void
+    - initComponents() : void
+    - btnPausaActionPerformed(evt : ActionEvent) : void
+    + {static} main(args : String[]) : void
+}
+
+class PA.Portal {
+    - nombre : String
+    - tamanoGrupo : int
+    - zonadestino : Zona
+    - sistema : Sistemageneral
+    - logger : Logger
+    - ninosesperandoGrupo : int
+    - ninosEsperandoSalida : List<Child>
+    - ninosEsperandoRegreso : List<Child>
+    - lock : ReentrantLock
+    - esperagrupo : Condition
+    - esperaretorno : Condition
+    - pasounico : Semaphore
+    - ninosregresando : int
+    --
+    + Portal(nombre : String, tamanogrupo : int, destino : Zona, sistema : Sistemageneral)
+    + esperarycruzar(nino : Child) : void
+    + regresaraHawkins(nino : Child) : void
+    + getNinosEsperandoSalida() : List<Child>
+    + getNinosEsperandoRegreso() : List<Child>
+    + getCantidadEsperandoSalida() : int
+    + getCantidadEsperandoRegreso() : int
+    + limpiarListaSalida() : void
+    + getZonaDestino() : Zona
+    + despertarPorLuz() : void
+}
+
+class PA.ServidorSockets {
+    - sistema : Sistemageneral
+    - serverSocket : ServerSocket
+    - ejecutando : boolean
+    + ServidorSockets(sistema : Sistemageneral, puerto : int)
+    + iniciar() : void
+    + detener() : void
+}
+
+class PA.ManejadorCliente {
+    - socket : Socket
+    - sistema : Sistemageneral
+    + ManejadorCliente(socket : Socket, sistema : Sistemageneral)
+    + run() : void
+    - procesarComando(comando : String) : String
+    - generarRanking() : String
+    - generarEvento() : String
+    - contarDemogorgonsEn(zona : Zona, sistema : Sistemageneral) : int
+}
+
+class PA.Sistemageneral {
+    - total_capturas : AtomicInteger
+    - sangre_total : AtomicInteger
+    - tormentaActiva : AtomicBoolean
+    - demogorgons : List<Demogorgon>
+    - logger : Logger
+    - pausado : boolean
+    - tiempoFinEvento : long
+    - nombreEventoActual : String
+    + colmena : Colmena
+    + red_mental_on : boolean
+    + eleveen_enfadada : boolean
+    + hayApagon : boolean
+    + callePrincipal : Zona
+    + sotanoByers : Zona
+    + radioWSQK : Zona
+    + bosque : Zona
+    + laboratorio : Zona
+    + centroComercial : Zona
+    + alcantarillado : Zona
+    + portalBosque : Portal
+    + portalLaboratorio : Portal
+    + portalCentroComercial : Portal
+    + portalAlcantarillado : Portal
+    --
+    + Sistemageneral()
+    + iniciar() : void
+    + pausar() : void
+    + reanudar() : void
+    + isPausado() : boolean
+    + lanzar_ciclo_eventos() : void
+    + eleveen() : void
+    + aviso_a_vecna() : void
+    + seleccionarPortalAleatorio() : Portal
+    + get_zona_con_mas_carne() : Zona
+    + sleepPausable(long tiempoMs) : void
+}
+
+class PA.Zona {
+    - ninosPresentes : List<Child>
+    - lock : ReentrantLock
+    - logger : Logger
+    - tipo : TipoZona
+    --
+    + Zona(tipo : TipoZona)
+    + entrar(nino : Child) : void
+    + salir(nino : Child) : void
+    + hayNinos() : boolean
+    + seleccionarNinoAleatorio() : Child
+    + capturarnino(nino : Child) : Child
+    + getTipo() : TipoZona
+    + getNinosPresentes() : List<Child>
+    + getCantidadNinos() : int
+    + esZonaHawkins() : boolean
+    + esZonaUpsideDown() : boolean
+}
+
+enum PA.TipoZona {
+    CALLE_PRINCIPAL
+    SOTANO_BYERS
+    RADIO_WSQK
+    BOSQUE
+    LABORATORIO
+    CENTRO_COMERCIAL
+    ALCANTARILLADO
+}
+
+' --- RELACIONES DE HERENCIA Y ESTRUCTURA ---
+java.lang.Thread <|-- PA.Child
+java.lang.Thread <|-- PA.Demogorgon
+java.lang.Thread <|-- PA.ManejadorCliente
+javax.swing.JFrame <|-- PA.GUI
+javax.swing.JFrame <|-- PA.ModuloRemoto
+PA.ServidorSockets +-- PA.ManejadorCliente
+PA.Zona +-- PA.TipoZona
+
+' --- RELACIONES DEL SISTEMA CENTRAL ---
+PA.Sistemageneral *-- "7" PA.Zona : gestiona
+PA.Sistemageneral *-- "4" PA.Portal : controla
+PA.Sistemageneral *-- PA.Colmena : posee
+PA.Sistemageneral o-- "many" PA.Demogorgon : coordina
+PA.Sistemageneral ..> PA.Child : crea hilos
+
+' --- INTERACCIONES DE LOS HILOS ---
+PA.Child --> PA.Sistemageneral : consulta pausa
+PA.Child --> PA.Zona : reside en
+PA.Child ..> PA.Portal : solicita cruce
+
+PA.Demogorgon --> PA.Sistemageneral : informa capturas
+PA.Demogorgon --> PA.Zona : caza en
+PA.Demogorgon ..> PA.Colmena : deposita victimas
+
+' --- COMUNICACIÓN Y LOGS ---
+PA.ServidorSockets --> PA.Sistemageneral : monitorea
+PA.ManejadorCliente --> PA.Sistemageneral : consulta estado
+PA.GUI --> PA.Sistemageneral : visualiza
+PA.Logger "1" --o "*" PA.Sistemageneral : registra eventos
+
+
+
+
+
+@enduml

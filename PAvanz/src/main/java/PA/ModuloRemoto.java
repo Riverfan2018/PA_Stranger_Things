@@ -5,8 +5,8 @@ import java.net.*;
 
 public class ModuloRemoto extends javax.swing.JFrame {
     private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private DataOutputStream out;
+    private DataInputStream in;
     private final String servidorIP = "localhost";
     private final int puerto = 8080;
     private final Object socketLock = new Object();
@@ -20,8 +20,8 @@ public class ModuloRemoto extends javax.swing.JFrame {
     private void conectar() {
         try {
             socket = new Socket(servidorIP, puerto);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
             System.out.println("Conectado al servidor");
         } catch (IOException e) {
             System.out.println("ERROR: No se pudo conectar al servidor");
@@ -50,33 +50,20 @@ public class ModuloRemoto extends javax.swing.JFrame {
         }
     }
     
-    private void enviarComando(String comando) {
-        synchronized (socketLock) {
-            if (out != null) {
-                out.println(comando);
-                actualizarTodo();
-            }
-        }
-    }
-    
-    // Acciones para botones
-    public void pausar() { enviarComando("PAUSAR"); }
-    public void reanudar() { enviarComando("REANUDAR"); }
-    
     private boolean pausado = false;
     
     private void togglePausa() {
         if (out != null) {
             try {
                 if (pausado) {
-                    out.println("REANUDAR");
+                    out.writeUTF("REANUDAR");
                     btnPausa.setText("Pausar");
                 } else {
-                    out.println("PAUSAR");
+                    out.writeUTF("PAUSAR");
                     btnPausa.setText("Reanudar");
                 }
-                // Leer y descartar la respuesta del servidor
-                String respuesta = in.readLine();
+                out.flush();
+                String respuesta = in.readUTF();
                 System.out.println("Respuesta: " + respuesta);
                 pausado = !pausado;
             } catch (IOException e) {
@@ -87,13 +74,12 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void DemogorgonDelMes() {
         if (out == null) return;
-        out.println("RANKING");
         try {
-            String linea = in.readLine();
+            out.writeUTF("RANKING");
+            out.flush();
+            String linea = in.readUTF();
             if (linea != null && !linea.isEmpty()) {
-                // Limpiar el formato del ranking
-                String ranking = linea.replace("=== TOP 3 DEMOGORGONS ===\n", "");
-                txtRanking.setText(ranking);
+                txtRanking.setText(linea.replace(" | ", "\n"));
             }
         } catch (IOException e) {
             txtRanking.setText("Error");
@@ -102,9 +88,10 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void actualizarEvento() {
         if (out == null) return;
-        out.println("EVENTO");
         try {
-            String linea = in.readLine();
+            out.writeUTF("EVENTO");
+            out.flush();
+            String linea = in.readUTF();
             if (linea != null && !linea.isEmpty() && linea.contains("|")) {
                 String[] partes = linea.split("\\|");
                 if (partes.length >= 2) {
@@ -142,22 +129,24 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void actualizarHawkins() {
         if (out == null) return;
-        out.println("NINOS_HAWKINS");
         try {
-            String total = in.readLine();
-            if (total != null && !total.isEmpty()) {
+            out.writeUTF("NINOS_HAWKINS");
+            out.flush();
+            String total = in.readUTF();
+            if (total != null) {
                 lblEstadoHawkins.setText("Total Niños en Hawkins: " + total);
             }
         } catch (IOException e) {
-            lblEstadoHawkins.setText("Total Niños en Hawkins: Error");
+            lblEstadoHawkins.setText("Error");
         }
     }
     
     private void actualizarPortales() {
         if (out == null) return;
-        out.println("PORTALES");
         try {
-            String linea = in.readLine();
+            out.writeUTF("PORTALES");
+            out.flush();
+            String linea = in.readUTF();
             if (linea != null) {
                 txtEstadoPortales.setText(linea.replace(" | ", "\n"));
             }
@@ -168,9 +157,10 @@ public class ModuloRemoto extends javax.swing.JFrame {
     
     private void actualizarUpsideDown() {
         if (out == null) return;
-        out.println("UPSIDE_DOWN");
         try {
-            String linea = in.readLine();
+            out.writeUTF("UPSIDE_DOWN");
+            out.flush();
+            String linea = in.readUTF();
             if (linea != null && !linea.isEmpty()) {
                 String[] partes = linea.split("\\|");
                 if (partes.length >= 9) {

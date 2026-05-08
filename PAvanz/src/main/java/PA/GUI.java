@@ -13,6 +13,9 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         iniciarActualizador();
         setTitle("La Batalla de Hawkins");
+        
+        setSize(1035, 670);
+        setMinimumSize(new java.awt.Dimension(1024, 640));
     }
     
     private void iniciarActualizador() {
@@ -30,12 +33,12 @@ public class GUI extends javax.swing.JFrame {
         if (sistema == null) return;
         
         // Actualizar Hawkins
-        LabelCallePrincipal.setText("CALLE PRINCIPAL: " + sistema.callePrincipal.getCantidadNinos());
-        LabelSotanoByers.setText("SOTANO BYERS: " + sistema.sotanoByers.getCantidadNinos());
-        LabelRadioWSQK.setText("RADIO WSQK: " + sistema.radioWSQK.getCantidadNinos());
+        lblCallePrincipal.setText(sistema.callePrincipal.getCantidadNinos() + " :CALLE PRINCIPAL ");
+        lblSotanoByers.setText(sistema.sotanoByers.getCantidadNinos() + " :SOTANO BYERS");
+        lblRadioWSQK.setText(sistema.radioWSQK.getCantidadNinos() + " :RADIO WSQK");
         
         // Actualizar Sangre
-        jLabel4.setText("SANGRE: " + sistema.get_sangre_recolectada());
+        lblSangre.setText("" + sistema.get_sangre_recolectada());
         
         // Mostrar evento actual
         String evento = " ";
@@ -51,32 +54,28 @@ public class GUI extends javax.swing.JFrame {
             evento = "Sin eventos activos";
         }
         
-        if (lblEventoActual != null) {
-            lblEventoActual.setText("Evento: " + evento);
-        }
-        
         // ========== MOSTRAR IDs DE NIÑOS EN CADA ZONA ==========
         
         // Hawkins - Calle Principal
-        mostrarNinosEnZona(sistema.callePrincipal, txtCallePrincipal);
+        mostrarNinosEnZona(sistema.callePrincipal, txtCallePrincipal, 5);
         
         // Hawkins - Sótano Byers
-        mostrarNinosEnZona(sistema.sotanoByers, txtSotanoByers);
+        mostrarNinosEnZona(sistema.sotanoByers, txtSotanoByers, 5);
         
         // Hawkins - Radio WSQK
-        mostrarNinosEnZona(sistema.radioWSQK, txtRadioWSQK);
+        mostrarNinosEnZona(sistema.radioWSQK, txtRadioWSQK, 5);
         
         // UpsideDown - Bosque
-        mostrarNinosEnZona(sistema.bosque, txtBosque);
+        mostrarNinosEnZona(sistema.bosque, txtBosque, 3);
         
         // UpsideDown - Laboratorio
-        mostrarNinosEnZona(sistema.laboratorio, txtLaboratorio);
+        mostrarNinosEnZona(sistema.laboratorio, txtLaboratorio, 3);
         
         // UpsideDown - Centro Comercial
-        mostrarNinosEnZona(sistema.centroComercial, txtCentroComercial);
+        mostrarNinosEnZona(sistema.centroComercial, txtCentroComercial, 3);
         
         // UpsideDown - Alcantarillado
-        mostrarNinosEnZona(sistema.alcantarillado, txtAlcantarillado);
+        mostrarNinosEnZona(sistema.alcantarillado, txtAlcantarillado, 3);
         
         // Colmena
         mostrarNinosEnColmena();
@@ -85,9 +84,7 @@ public class GUI extends javax.swing.JFrame {
         mostrarPortales();
         
         // Demogorgones
-        mostrarDemogorgonsPorZona();
-        DemogorgonDelMes();
-        
+        mostrarDemogorgonsPorZona();        
         
     }
     
@@ -131,25 +128,6 @@ public class GUI extends javax.swing.JFrame {
         txtDemogorgonsAlcantarillado.setText(sbAlcantarillado.toString());
     }
     
-    private void DemogorgonDelMes() {
-        List<Demogorgon> demogorgons = sistema.getDemogorgons();
-        // Ordenar por capturas (mayor a menor)
-        demogorgons.sort((a, b) -> Integer.compare(b.getContadorCapturas(), a.getContadorCapturas()));
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Top 3 Demogorgones\n");
-        for (int i = 0; i < Math.min(3, demogorgons.size()); i++) {
-            Demogorgon d = demogorgons.get(i);
-            sb.append((i+1)).append(". ")
-              .append(d.getDemogorgonId())
-              .append(" - ")
-              .append(d.getContadorCapturas())
-              .append(" capt.\n");
-        }
-
-        txtRanking.setText(sb.toString());
-    }
-    
     private void mostrarPortales() {
         // PORTAL BOSQUE - Obtener los portales a través de sistema
         Portal portalBosque = sistema.getPortalBosque();
@@ -183,22 +161,27 @@ public class GUI extends javax.swing.JFrame {
         textArea.setText(sb.toString());
     }
     
-    private void mostrarNinosEnZona(Zona zona, javax.swing.JTextArea textArea) {
+    private void mostrarNinosEnZona(Zona zona, javax.swing.JTextArea textArea, int TamLinea) {
+        List<Child> ninos = zona.getNinosPresentes();
         StringBuilder sb = new StringBuilder();
-        for (Child nino : zona.getNinosPresentes()) {
-            sb.append(nino.getNinoId()).append("\n");
+        int contador = 0;
+        int porLinea = TamLinea;  // Número de niños por línea
+
+        for (Child nino : ninos) {
+            sb.append(nino.getNinoId());
+            contador++;
+            if (contador % porLinea == 0) {
+                sb.append("\n");
+            } else {
+                sb.append("   ");
+            }
         }
+
         textArea.setText(sb.toString());
     }
     
     private void mostrarNinosEnColmena() {
-        StringBuilder sb = new StringBuilder();
-        // Necesitas un método en Colmena para obtener la lista
-        // Por ahora usamos cantidad, pero idealmente:
-        for (Child nino : sistema.colmena.getNinosCapturados()) {
-            sb.append(nino.getNinoId()).append("\n");
-        }
-        txtColmena.setText(sb.toString());
+        lblColmena.setText(String.valueOf(sistema.colmena.getCantidadNinos()));
     }
     
     public GUI() {
@@ -215,727 +198,557 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel5 = new javax.swing.JPanel();
         PanelGeneral = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
         PanelHawkins = new javax.swing.JPanel();
-        LabelHawkins = new javax.swing.JLabel();
         PanelCallePrincipal = new javax.swing.JPanel();
-        LabelCallePrincipal = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtCallePrincipal = new javax.swing.JTextArea();
+        lblRadioWSQK = new javax.swing.JLabel();
+        ScrollRadioWSQK = new javax.swing.JScrollPane();
+        txtRadioWSQK = new javax.swing.JTextArea();
         PanelSotanoByers = new javax.swing.JPanel();
-        LabelSotanoByers = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        lblSotanoByers = new javax.swing.JLabel();
+        ScrollSotanoByers = new javax.swing.JScrollPane();
         txtSotanoByers = new javax.swing.JTextArea();
         PanelRadioWSQK = new javax.swing.JPanel();
-        LabelRadioWSQK = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtRadioWSQK = new javax.swing.JTextArea();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        PanelPortales = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
-        jPanel21 = new javax.swing.JPanel();
-        jPanel18 = new javax.swing.JPanel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        txtPortalLaboratorioSalida = new javax.swing.JTextArea();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        txtPortalBosqueRegreso = new javax.swing.JTextArea();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        txtPortalBosqueSalida = new javax.swing.JTextArea();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        txtPortalLaboratorioRegreso = new javax.swing.JTextArea();
-        jScrollPane12 = new javax.swing.JScrollPane();
-        txtPortalCentroSalida = new javax.swing.JTextArea();
-        jScrollPane13 = new javax.swing.JScrollPane();
-        txtPortalCentroRegreso = new javax.swing.JTextArea();
-        jScrollPane14 = new javax.swing.JScrollPane();
-        txtPortalAlcantarilladoSalida = new javax.swing.JTextArea();
-        jScrollPane15 = new javax.swing.JScrollPane();
-        txtPortalAlcantarilladoRegreso = new javax.swing.JTextArea();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel22 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        txtBosque = new javax.swing.JTextArea();
-        jScrollPane23 = new javax.swing.JScrollPane();
-        jScrollPane24 = new javax.swing.JScrollPane();
+        lblCallePrincipal = new javax.swing.JLabel();
+        SrollCallePrincipal = new javax.swing.JScrollPane();
+        txtCallePrincipal = new javax.swing.JTextArea();
+        lblTituloHawkins = new javax.swing.JLabel();
+        PanelUD = new javax.swing.JPanel();
+        lblTituloUD = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         txtDemogorgonsBosque = new javax.swing.JTextArea();
-        jPanel23 = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        txtLaboratorio = new javax.swing.JTextArea();
-        jScrollPane18 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtBosque = new javax.swing.JTextArea();
+        lblTituloColmena = new javax.swing.JLabel();
+        lblColmena = new javax.swing.JLabel();
+        lblBosque = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
         txtDemogorgonsLaboratorio = new javax.swing.JTextArea();
-        jPanel24 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtLaboratorio = new javax.swing.JTextArea();
+        lblLaboratorio = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtDemogorgonsCentro = new javax.swing.JTextArea();
         jScrollPane6 = new javax.swing.JScrollPane();
         txtCentroComercial = new javax.swing.JTextArea();
-        jScrollPane19 = new javax.swing.JScrollPane();
-        jScrollPane20 = new javax.swing.JScrollPane();
-        txtDemogorgonsCentro = new javax.swing.JTextArea();
-        jPanel25 = new javax.swing.JPanel();
+        lblCentroComercial = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        txtAlcantarillado = new javax.swing.JTextArea();
-        jScrollPane21 = new javax.swing.JScrollPane();
-        jScrollPane22 = new javax.swing.JScrollPane();
         txtDemogorgonsAlcantarillado = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        EventPanel = new javax.swing.JPanel();
-        lblEventoActual = new javax.swing.JLabel();
-        jScrollPane16 = new javax.swing.JScrollPane();
-        txtColmena = new javax.swing.JTextArea();
-        jLabel8 = new javax.swing.JLabel();
-        jScrollPane17 = new javax.swing.JScrollPane();
-        txtRanking = new javax.swing.JTextArea();
-        btnAbrirRemoto = new javax.swing.JButton();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        txtAlcantarillado = new javax.swing.JTextArea();
+        lblAlcantarillado = new javax.swing.JLabel();
+        PanelPortales = new javax.swing.JPanel();
+        lblTituloPortales = new javax.swing.JLabel();
+        SrollBosqueI = new javax.swing.JScrollPane();
+        txtPortalBosqueSalida = new javax.swing.JTextArea();
+        SrollBosqueV = new javax.swing.JScrollPane();
+        txtPortalBosqueRegreso = new javax.swing.JTextArea();
+        lblPortalBosque = new javax.swing.JLabel();
+        lblPortalLaboratorio = new javax.swing.JLabel();
+        SrollLaboratorioV = new javax.swing.JScrollPane();
+        txtPortalLaboratorioRegreso = new javax.swing.JTextArea();
+        SrollLaboratorioI = new javax.swing.JScrollPane();
+        txtPortalLaboratorioSalida = new javax.swing.JTextArea();
+        lblPortalCentroComercial = new javax.swing.JLabel();
+        SrollCentroComercialV = new javax.swing.JScrollPane();
+        txtPortalCentroRegreso = new javax.swing.JTextArea();
+        SrollCentroComercialI = new javax.swing.JScrollPane();
+        txtPortalCentroSalida = new javax.swing.JTextArea();
+        lblPortalAlcantarillado = new javax.swing.JLabel();
+        SrollAlcantarilladoV = new javax.swing.JScrollPane();
+        txtPortalAlcantarilladoRegreso = new javax.swing.JTextArea();
+        SrollAlcantarilladoI = new javax.swing.JScrollPane();
+        txtPortalAlcantarilladoSalida = new javax.swing.JTextArea();
+        PanelSangre = new javax.swing.JPanel();
+        lblTituloSangre = new javax.swing.JLabel();
+        PanelSubSangre = new javax.swing.JPanel();
+        lblSangre = new javax.swing.JLabel();
+        lblTitulo = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        PanelGeneral.setBackground(new java.awt.Color(0, 102, 0));
-
-        jPanel2.setBackground(new java.awt.Color(0, 102, 0));
-
-        PanelHawkins.setBackground(new java.awt.Color(0, 153, 0));
-
-        LabelHawkins.setText("-HAWKINS---------------------------------------");
-
-        PanelCallePrincipal.setBackground(new java.awt.Color(0, 204, 0));
-
-        LabelCallePrincipal.setText("CALLE PRINCIPAL");
-
-        txtCallePrincipal.setEditable(false);
-        txtCallePrincipal.setColumns(15);
-        txtCallePrincipal.setRows(5);
-        jScrollPane1.setViewportView(txtCallePrincipal);
-
-        javax.swing.GroupLayout PanelCallePrincipalLayout = new javax.swing.GroupLayout(PanelCallePrincipal);
-        PanelCallePrincipal.setLayout(PanelCallePrincipalLayout);
-        PanelCallePrincipalLayout.setHorizontalGroup(
-            PanelCallePrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelCallePrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelCallePrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelCallePrincipalLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(LabelCallePrincipal))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
-        );
-        PanelCallePrincipalLayout.setVerticalGroup(
-            PanelCallePrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelCallePrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(LabelCallePrincipal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        PanelSotanoByers.setBackground(new java.awt.Color(0, 204, 0));
-
-        LabelSotanoByers.setText("SOTANO BYERS");
-
-        txtSotanoByers.setEditable(false);
-        txtSotanoByers.setColumns(15);
-        txtSotanoByers.setRows(5);
-        jScrollPane2.setViewportView(txtSotanoByers);
-
-        javax.swing.GroupLayout PanelSotanoByersLayout = new javax.swing.GroupLayout(PanelSotanoByers);
-        PanelSotanoByers.setLayout(PanelSotanoByersLayout);
-        PanelSotanoByersLayout.setHorizontalGroup(
-            PanelSotanoByersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelSotanoByersLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelSotanoByersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelSotanoByersLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(LabelSotanoByers))
-                    .addComponent(jScrollPane2))
-                .addContainerGap())
-        );
-        PanelSotanoByersLayout.setVerticalGroup(
-            PanelSotanoByersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelSotanoByersLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(LabelSotanoByers)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        PanelRadioWSQK.setBackground(new java.awt.Color(0, 204, 0));
-
-        LabelRadioWSQK.setText("RADIO WSQK");
-
-        txtRadioWSQK.setEditable(false);
-        txtRadioWSQK.setColumns(15);
-        txtRadioWSQK.setRows(5);
-        jScrollPane3.setViewportView(txtRadioWSQK);
-
-        javax.swing.GroupLayout PanelRadioWSQKLayout = new javax.swing.GroupLayout(PanelRadioWSQK);
-        PanelRadioWSQK.setLayout(PanelRadioWSQKLayout);
-        PanelRadioWSQKLayout.setHorizontalGroup(
-            PanelRadioWSQKLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelRadioWSQKLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelRadioWSQKLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRadioWSQKLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(LabelRadioWSQK))
-                    .addComponent(jScrollPane3))
-                .addContainerGap())
-        );
-        PanelRadioWSQKLayout.setVerticalGroup(
-            PanelRadioWSQKLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelRadioWSQKLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(LabelRadioWSQK)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel9.setBackground(new java.awt.Color(204, 51, 0));
-
-        jLabel4.setBackground(new java.awt.Color(204, 0, 0));
-        jLabel4.setText("SANGRE:");
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel4)
-                .addGap(4, 4, 4))
-        );
-
-        javax.swing.GroupLayout PanelHawkinsLayout = new javax.swing.GroupLayout(PanelHawkins);
-        PanelHawkins.setLayout(PanelHawkinsLayout);
-        PanelHawkinsLayout.setHorizontalGroup(
-            PanelHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelHawkinsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(PanelHawkinsLayout.createSequentialGroup()
-                        .addComponent(LabelHawkins)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(PanelCallePrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelSotanoByers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelRadioWSQK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        PanelHawkinsLayout.setVerticalGroup(
-            PanelHawkinsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelHawkinsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(LabelHawkins)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelCallePrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelSotanoByers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelRadioWSQK, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        PanelPortales.setBackground(new java.awt.Color(0, 153, 0));
-
-        jPanel12.setBackground(new java.awt.Color(0, 204, 0));
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
-
-        jPanel14.setBackground(new java.awt.Color(0, 204, 0));
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
-
-        jPanel21.setBackground(new java.awt.Color(0, 204, 0));
-
-        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
-        jPanel21.setLayout(jPanel21Layout);
-        jPanel21Layout.setHorizontalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
-        );
-        jPanel21Layout.setVerticalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
-
-        jPanel18.setBackground(new java.awt.Color(0, 204, 0));
-
-        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
-        jPanel18.setLayout(jPanel18Layout);
-        jPanel18Layout.setHorizontalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
-        );
-        jPanel18Layout.setVerticalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
-
-        txtPortalLaboratorioSalida.setEditable(false);
-        txtPortalLaboratorioSalida.setColumns(5);
-        txtPortalLaboratorioSalida.setRows(5);
-        jScrollPane8.setViewportView(txtPortalLaboratorioSalida);
-
-        txtPortalBosqueRegreso.setEditable(false);
-        txtPortalBosqueRegreso.setColumns(5);
-        txtPortalBosqueRegreso.setRows(5);
-        jScrollPane9.setViewportView(txtPortalBosqueRegreso);
-
-        txtPortalBosqueSalida.setEditable(false);
-        txtPortalBosqueSalida.setColumns(5);
-        txtPortalBosqueSalida.setRows(5);
-        jScrollPane10.setViewportView(txtPortalBosqueSalida);
-
-        txtPortalLaboratorioRegreso.setEditable(false);
-        txtPortalLaboratorioRegreso.setColumns(5);
-        txtPortalLaboratorioRegreso.setRows(5);
-        jScrollPane11.setViewportView(txtPortalLaboratorioRegreso);
-
-        txtPortalCentroSalida.setEditable(false);
-        txtPortalCentroSalida.setColumns(5);
-        txtPortalCentroSalida.setRows(5);
-        jScrollPane12.setViewportView(txtPortalCentroSalida);
-
-        txtPortalCentroRegreso.setEditable(false);
-        txtPortalCentroRegreso.setColumns(5);
-        txtPortalCentroRegreso.setRows(5);
-        jScrollPane13.setViewportView(txtPortalCentroRegreso);
-
-        txtPortalAlcantarilladoSalida.setEditable(false);
-        txtPortalAlcantarilladoSalida.setColumns(5);
-        txtPortalAlcantarilladoSalida.setRows(5);
-        jScrollPane14.setViewportView(txtPortalAlcantarilladoSalida);
-
-        txtPortalAlcantarilladoRegreso.setEditable(false);
-        txtPortalAlcantarilladoRegreso.setColumns(5);
-        txtPortalAlcantarilladoRegreso.setRows(5);
-        jScrollPane15.setViewportView(txtPortalAlcantarilladoRegreso);
-
-        javax.swing.GroupLayout PanelPortalesLayout = new javax.swing.GroupLayout(PanelPortales);
-        PanelPortales.setLayout(PanelPortalesLayout);
-        PanelPortalesLayout.setHorizontalGroup(
-            PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelPortalesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addGroup(PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PanelPortalesLayout.createSequentialGroup()
-                                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(PanelPortalesLayout.createSequentialGroup()
-                                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        PanelPortalesLayout.setVerticalGroup(
-            PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPortalesLayout.createSequentialGroup()
-                .addGroup(PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPortalesLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(PanelPortalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(79, 79, 79)
-                        .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(77, 77, 77)
-                        .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40))
-                    .addGroup(PanelPortalesLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(PanelPortalesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel5.setBackground(new java.awt.Color(0, 153, 0));
-
-        jLabel3.setText("-UPSIDE-DOWN-----------------------------------------------------------");
-
-        jPanel22.setBackground(new java.awt.Color(0, 204, 0));
-
-        txtBosque.setEditable(false);
-        txtBosque.setColumns(10);
-        txtBosque.setRows(5);
-        jScrollPane4.setViewportView(txtBosque);
-
-        txtDemogorgonsBosque.setEditable(false);
-        txtDemogorgonsBosque.setColumns(5);
-        txtDemogorgonsBosque.setRows(5);
-        jScrollPane24.setViewportView(txtDemogorgonsBosque);
-
-        jScrollPane23.setViewportView(jScrollPane24);
-
-        javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
-        jPanel22.setLayout(jPanel22Layout);
-        jPanel22Layout.setHorizontalGroup(
-            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel22Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane23, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel22Layout.setVerticalGroup(
-            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel22Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel22Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane23)))
-        );
-
-        jPanel23.setBackground(new java.awt.Color(0, 204, 0));
-
-        txtLaboratorio.setEditable(false);
-        txtLaboratorio.setColumns(10);
-        txtLaboratorio.setRows(5);
-        jScrollPane5.setViewportView(txtLaboratorio);
-
-        txtDemogorgonsLaboratorio.setEditable(false);
-        txtDemogorgonsLaboratorio.setColumns(5);
-        txtDemogorgonsLaboratorio.setRows(5);
-        jScrollPane18.setViewportView(txtDemogorgonsLaboratorio);
-
-        javax.swing.GroupLayout jPanel23Layout = new javax.swing.GroupLayout(jPanel23);
-        jPanel23.setLayout(jPanel23Layout);
-        jPanel23Layout.setHorizontalGroup(
-            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel23Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane18, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel23Layout.setVerticalGroup(
-            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel23Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane18, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
-
-        jPanel24.setBackground(new java.awt.Color(0, 204, 0));
-
-        txtCentroComercial.setEditable(false);
-        txtCentroComercial.setColumns(10);
-        txtCentroComercial.setRows(5);
-        jScrollPane6.setViewportView(txtCentroComercial);
-
-        txtDemogorgonsCentro.setEditable(false);
-        txtDemogorgonsCentro.setColumns(5);
-        txtDemogorgonsCentro.setRows(5);
-        jScrollPane20.setViewportView(txtDemogorgonsCentro);
-
-        jScrollPane19.setViewportView(jScrollPane20);
-
-        javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
-        jPanel24.setLayout(jPanel24Layout);
-        jPanel24Layout.setHorizontalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel24Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel24Layout.setVerticalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel24Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane6)
-                    .addComponent(jScrollPane19, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
-        );
-
-        jPanel25.setBackground(new java.awt.Color(0, 204, 0));
-
-        txtAlcantarillado.setEditable(false);
-        txtAlcantarillado.setColumns(10);
-        txtAlcantarillado.setRows(5);
-        jScrollPane7.setViewportView(txtAlcantarillado);
-
-        txtDemogorgonsAlcantarillado.setEditable(false);
-        txtDemogorgonsAlcantarillado.setColumns(5);
-        txtDemogorgonsAlcantarillado.setRows(5);
-        jScrollPane22.setViewportView(txtDemogorgonsAlcantarillado);
-
-        jScrollPane21.setViewportView(jScrollPane22);
-
-        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
-        jPanel25.setLayout(jPanel25Layout);
-        jPanel25Layout.setHorizontalGroup(
-            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel25Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel25Layout.setVerticalGroup(
-            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel25Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane7)
-                    .addComponent(jScrollPane21, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
-        );
+        jPanel5.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 4, true));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel25, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel24, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel23, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel22, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 272, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGap(0, 472, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Simulación BATALLA POR HAWKINS");
+        setBackground(null);
+        setPreferredSize(new java.awt.Dimension(1024, 640));
+        getContentPane().setLayout(null);
+
+        PanelGeneral.setBackground(new java.awt.Color(0, 0, 0));
+        PanelGeneral.setLayout(null);
+
+        PanelHawkins.setBackground(new java.awt.Color(0, 0, 0));
+        PanelHawkins.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 4, true));
+        PanelHawkins.setLayout(null);
+
+        PanelCallePrincipal.setBackground(new java.awt.Color(51, 51, 51));
+        PanelCallePrincipal.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelCallePrincipal.setLayout(null);
+
+        lblRadioWSQK.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblRadioWSQK.setForeground(new java.awt.Color(0, 204, 0));
+        lblRadioWSQK.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblRadioWSQK.setText("RADIO WSQK");
+        PanelCallePrincipal.add(lblRadioWSQK);
+        lblRadioWSQK.setBounds(10, 0, 240, 20);
+
+        ScrollRadioWSQK.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        ScrollRadioWSQK.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtRadioWSQK.setEditable(false);
+        txtRadioWSQK.setBackground(new java.awt.Color(0, 0, 0));
+        txtRadioWSQK.setColumns(15);
+        txtRadioWSQK.setFont(new java.awt.Font("Book Antiqua", 0, 12)); // NOI18N
+        txtRadioWSQK.setForeground(new java.awt.Color(0, 153, 0));
+        txtRadioWSQK.setRows(5);
+        ScrollRadioWSQK.setViewportView(txtRadioWSQK);
+
+        PanelCallePrincipal.add(ScrollRadioWSQK);
+        ScrollRadioWSQK.setBounds(0, 20, 260, 110);
+
+        PanelHawkins.add(PanelCallePrincipal);
+        PanelCallePrincipal.setBounds(10, 320, 260, 130);
+
+        PanelSotanoByers.setBackground(new java.awt.Color(51, 51, 51));
+        PanelSotanoByers.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelSotanoByers.setLayout(null);
+
+        lblSotanoByers.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblSotanoByers.setForeground(new java.awt.Color(0, 204, 0));
+        lblSotanoByers.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblSotanoByers.setText("SOTANO BYERS");
+        PanelSotanoByers.add(lblSotanoByers);
+        lblSotanoByers.setBounds(10, 0, 240, 20);
+
+        ScrollSotanoByers.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        ScrollSotanoByers.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtSotanoByers.setEditable(false);
+        txtSotanoByers.setBackground(new java.awt.Color(0, 0, 0));
+        txtSotanoByers.setColumns(15);
+        txtSotanoByers.setFont(new java.awt.Font("Book Antiqua", 0, 12)); // NOI18N
+        txtSotanoByers.setForeground(new java.awt.Color(0, 153, 0));
+        txtSotanoByers.setRows(5);
+        ScrollSotanoByers.setViewportView(txtSotanoByers);
+
+        PanelSotanoByers.add(ScrollSotanoByers);
+        ScrollSotanoByers.setBounds(0, 20, 260, 110);
+
+        PanelHawkins.add(PanelSotanoByers);
+        PanelSotanoByers.setBounds(10, 180, 260, 130);
+
+        PanelRadioWSQK.setBackground(new java.awt.Color(51, 51, 51));
+        PanelRadioWSQK.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelRadioWSQK.setLayout(null);
+
+        lblCallePrincipal.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblCallePrincipal.setForeground(new java.awt.Color(0, 204, 0));
+        lblCallePrincipal.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblCallePrincipal.setText("CALLE PRINCIPAL");
+        PanelRadioWSQK.add(lblCallePrincipal);
+        lblCallePrincipal.setBounds(10, 0, 240, 20);
+
+        SrollCallePrincipal.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        SrollCallePrincipal.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtCallePrincipal.setEditable(false);
+        txtCallePrincipal.setBackground(new java.awt.Color(0, 0, 0));
+        txtCallePrincipal.setColumns(15);
+        txtCallePrincipal.setFont(new java.awt.Font("Book Antiqua", 0, 12)); // NOI18N
+        txtCallePrincipal.setForeground(new java.awt.Color(0, 153, 0));
+        txtCallePrincipal.setRows(5);
+        SrollCallePrincipal.setViewportView(txtCallePrincipal);
+
+        PanelRadioWSQK.add(SrollCallePrincipal);
+        SrollCallePrincipal.setBounds(0, 20, 260, 110);
+
+        PanelHawkins.add(PanelRadioWSQK);
+        PanelRadioWSQK.setBounds(10, 40, 260, 130);
+
+        lblTituloHawkins.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblTituloHawkins.setForeground(new java.awt.Color(0, 153, 0));
+        lblTituloHawkins.setText("HAWKINS");
+        PanelHawkins.add(lblTituloHawkins);
+        lblTituloHawkins.setBounds(20, 10, 110, 20);
+
+        PanelGeneral.add(PanelHawkins);
+        PanelHawkins.setBounds(10, 20, 280, 460);
+
+        PanelUD.setBackground(new java.awt.Color(0, 0, 0));
+        PanelUD.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 4, true));
+        PanelUD.setLayout(null);
+
+        lblTituloUD.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblTituloUD.setForeground(new java.awt.Color(153, 0, 0));
+        lblTituloUD.setText("UPSIDE DOWN ");
+        PanelUD.add(lblTituloUD);
+        lblTituloUD.setBounds(10, 30, 140, 40);
+
+        jScrollPane1.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtDemogorgonsBosque.setEditable(false);
+        txtDemogorgonsBosque.setBackground(new java.awt.Color(0, 0, 0));
+        txtDemogorgonsBosque.setColumns(10);
+        txtDemogorgonsBosque.setForeground(new java.awt.Color(153, 0, 0));
+        txtDemogorgonsBosque.setRows(5);
+        jScrollPane1.setViewportView(txtDemogorgonsBosque);
+
+        PanelUD.add(jScrollPane1);
+        jScrollPane1.setBounds(160, 120, 140, 100);
+
+        jScrollPane2.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtBosque.setEditable(false);
+        txtBosque.setBackground(new java.awt.Color(0, 0, 0));
+        txtBosque.setColumns(10);
+        txtBosque.setForeground(new java.awt.Color(153, 0, 0));
+        txtBosque.setRows(5);
+        jScrollPane2.setViewportView(txtBosque);
+
+        PanelUD.add(jScrollPane2);
+        jScrollPane2.setBounds(20, 120, 140, 100);
+
+        lblTituloColmena.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblTituloColmena.setForeground(new java.awt.Color(153, 0, 0));
+        lblTituloColmena.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloColmena.setText("COLMENA");
+        PanelUD.add(lblTituloColmena);
+        lblTituloColmena.setBounds(200, 10, 100, 20);
+
+        lblColmena.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblColmena.setForeground(new java.awt.Color(153, 0, 0));
+        lblColmena.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblColmena.setText("0");
+        lblColmena.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        PanelUD.add(lblColmena);
+        lblColmena.setBounds(200, 30, 100, 80);
+
+        lblBosque.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblBosque.setForeground(new java.awt.Color(153, 0, 0));
+        lblBosque.setText("BOSQUE");
+        PanelUD.add(lblBosque);
+        lblBosque.setBounds(30, 100, 130, 20);
+
+        jScrollPane3.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtDemogorgonsLaboratorio.setEditable(false);
+        txtDemogorgonsLaboratorio.setBackground(new java.awt.Color(0, 0, 0));
+        txtDemogorgonsLaboratorio.setColumns(10);
+        txtDemogorgonsLaboratorio.setForeground(new java.awt.Color(153, 0, 0));
+        txtDemogorgonsLaboratorio.setRows(5);
+        jScrollPane3.setViewportView(txtDemogorgonsLaboratorio);
+
+        PanelUD.add(jScrollPane3);
+        jScrollPane3.setBounds(160, 240, 140, 100);
+
+        jScrollPane4.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtLaboratorio.setEditable(false);
+        txtLaboratorio.setBackground(new java.awt.Color(0, 0, 0));
+        txtLaboratorio.setColumns(10);
+        txtLaboratorio.setForeground(new java.awt.Color(153, 0, 0));
+        txtLaboratorio.setRows(5);
+        jScrollPane4.setViewportView(txtLaboratorio);
+
+        PanelUD.add(jScrollPane4);
+        jScrollPane4.setBounds(20, 240, 140, 100);
+
+        lblLaboratorio.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblLaboratorio.setForeground(new java.awt.Color(153, 0, 0));
+        lblLaboratorio.setText("LABORATORIO");
+        PanelUD.add(lblLaboratorio);
+        lblLaboratorio.setBounds(30, 220, 130, 20);
+
+        jScrollPane5.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtDemogorgonsCentro.setEditable(false);
+        txtDemogorgonsCentro.setBackground(new java.awt.Color(0, 0, 0));
+        txtDemogorgonsCentro.setColumns(10);
+        txtDemogorgonsCentro.setForeground(new java.awt.Color(153, 0, 0));
+        txtDemogorgonsCentro.setRows(5);
+        jScrollPane5.setViewportView(txtDemogorgonsCentro);
+
+        PanelUD.add(jScrollPane5);
+        jScrollPane5.setBounds(160, 360, 140, 100);
+
+        jScrollPane6.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane6.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtCentroComercial.setEditable(false);
+        txtCentroComercial.setBackground(new java.awt.Color(0, 0, 0));
+        txtCentroComercial.setColumns(10);
+        txtCentroComercial.setForeground(new java.awt.Color(153, 0, 0));
+        txtCentroComercial.setRows(5);
+        jScrollPane6.setViewportView(txtCentroComercial);
+
+        PanelUD.add(jScrollPane6);
+        jScrollPane6.setBounds(20, 360, 140, 100);
+
+        lblCentroComercial.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblCentroComercial.setForeground(new java.awt.Color(153, 0, 0));
+        lblCentroComercial.setText("CENTRO COMERCIAL");
+        PanelUD.add(lblCentroComercial);
+        lblCentroComercial.setBounds(30, 340, 170, 20);
+
+        jScrollPane7.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane7.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane7.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtDemogorgonsAlcantarillado.setEditable(false);
+        txtDemogorgonsAlcantarillado.setBackground(new java.awt.Color(0, 0, 0));
+        txtDemogorgonsAlcantarillado.setColumns(10);
+        txtDemogorgonsAlcantarillado.setForeground(new java.awt.Color(153, 0, 0));
+        txtDemogorgonsAlcantarillado.setRows(5);
+        jScrollPane7.setViewportView(txtDemogorgonsAlcantarillado);
+
+        PanelUD.add(jScrollPane7);
+        jScrollPane7.setBounds(160, 480, 140, 100);
+
+        jScrollPane8.setBackground(new java.awt.Color(0, 0, 0));
+        jScrollPane8.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 2, true));
+        jScrollPane8.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtAlcantarillado.setEditable(false);
+        txtAlcantarillado.setBackground(new java.awt.Color(0, 0, 0));
+        txtAlcantarillado.setColumns(10);
+        txtAlcantarillado.setForeground(new java.awt.Color(153, 0, 0));
+        txtAlcantarillado.setRows(5);
+        jScrollPane8.setViewportView(txtAlcantarillado);
+
+        PanelUD.add(jScrollPane8);
+        jScrollPane8.setBounds(20, 480, 140, 100);
+
+        lblAlcantarillado.setFont(new java.awt.Font("Book Antiqua", 0, 14)); // NOI18N
+        lblAlcantarillado.setForeground(new java.awt.Color(153, 0, 0));
+        lblAlcantarillado.setText("ALCANTARILLADO");
+        PanelUD.add(lblAlcantarillado);
+        lblAlcantarillado.setBounds(30, 460, 160, 20);
+
+        PanelGeneral.add(PanelUD);
+        PanelUD.setBounds(690, 20, 320, 600);
+
+        PanelPortales.setBackground(new java.awt.Color(0, 0, 0));
+        PanelPortales.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 4, true));
+        PanelPortales.setLayout(null);
+
+        lblTituloPortales.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblTituloPortales.setForeground(new java.awt.Color(0, 153, 0));
+        lblTituloPortales.setText("PORTALES");
+        PanelPortales.add(lblTituloPortales);
+        lblTituloPortales.setBounds(20, 10, 150, 20);
+
+        SrollBosqueI.setBackground(new java.awt.Color(0, 0, 0));
+        SrollBosqueI.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        SrollBosqueI.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalBosqueSalida.setEditable(false);
+        txtPortalBosqueSalida.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalBosqueSalida.setColumns(5);
+        txtPortalBosqueSalida.setForeground(new java.awt.Color(0, 153, 0));
+        txtPortalBosqueSalida.setRows(5);
+        SrollBosqueI.setViewportView(txtPortalBosqueSalida);
+
+        PanelPortales.add(SrollBosqueI);
+        SrollBosqueI.setBounds(20, 40, 100, 100);
+
+        SrollBosqueV.setBackground(new java.awt.Color(0, 0, 0));
+        SrollBosqueV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
+        SrollBosqueV.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalBosqueRegreso.setEditable(false);
+        txtPortalBosqueRegreso.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalBosqueRegreso.setColumns(5);
+        txtPortalBosqueRegreso.setForeground(new java.awt.Color(153, 153, 0));
+        txtPortalBosqueRegreso.setRows(5);
+        SrollBosqueV.setViewportView(txtPortalBosqueRegreso);
+
+        PanelPortales.add(SrollBosqueV);
+        SrollBosqueV.setBounds(240, 40, 100, 100);
+
+        lblPortalBosque.setForeground(new java.awt.Color(0, 153, 0));
+        lblPortalBosque.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblPortalBosque);
+        lblPortalBosque.setBounds(130, 70, 100, 30);
+
+        lblPortalLaboratorio.setForeground(new java.awt.Color(0, 153, 0));
+        lblPortalLaboratorio.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblPortalLaboratorio);
+        lblPortalLaboratorio.setBounds(130, 190, 100, 30);
+
+        SrollLaboratorioV.setBackground(new java.awt.Color(0, 0, 0));
+        SrollLaboratorioV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
+        SrollLaboratorioV.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalLaboratorioRegreso.setEditable(false);
+        txtPortalLaboratorioRegreso.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalLaboratorioRegreso.setColumns(5);
+        txtPortalLaboratorioRegreso.setForeground(new java.awt.Color(153, 153, 0));
+        txtPortalLaboratorioRegreso.setRows(5);
+        SrollLaboratorioV.setViewportView(txtPortalLaboratorioRegreso);
+
+        PanelPortales.add(SrollLaboratorioV);
+        SrollLaboratorioV.setBounds(240, 160, 100, 100);
+
+        SrollLaboratorioI.setBackground(new java.awt.Color(0, 0, 0));
+        SrollLaboratorioI.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        SrollLaboratorioI.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalLaboratorioSalida.setEditable(false);
+        txtPortalLaboratorioSalida.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalLaboratorioSalida.setColumns(5);
+        txtPortalLaboratorioSalida.setForeground(new java.awt.Color(0, 153, 0));
+        txtPortalLaboratorioSalida.setRows(5);
+        SrollLaboratorioI.setViewportView(txtPortalLaboratorioSalida);
+
+        PanelPortales.add(SrollLaboratorioI);
+        SrollLaboratorioI.setBounds(20, 160, 100, 100);
+
+        lblPortalCentroComercial.setForeground(new java.awt.Color(0, 153, 0));
+        lblPortalCentroComercial.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblPortalCentroComercial);
+        lblPortalCentroComercial.setBounds(130, 310, 100, 30);
+
+        SrollCentroComercialV.setBackground(new java.awt.Color(0, 0, 0));
+        SrollCentroComercialV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
+        SrollCentroComercialV.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalCentroRegreso.setEditable(false);
+        txtPortalCentroRegreso.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalCentroRegreso.setColumns(5);
+        txtPortalCentroRegreso.setForeground(new java.awt.Color(153, 153, 0));
+        txtPortalCentroRegreso.setRows(5);
+        SrollCentroComercialV.setViewportView(txtPortalCentroRegreso);
+
+        PanelPortales.add(SrollCentroComercialV);
+        SrollCentroComercialV.setBounds(240, 280, 100, 100);
+
+        SrollCentroComercialI.setBackground(new java.awt.Color(0, 0, 0));
+        SrollCentroComercialI.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        SrollCentroComercialI.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalCentroSalida.setEditable(false);
+        txtPortalCentroSalida.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalCentroSalida.setColumns(5);
+        txtPortalCentroSalida.setForeground(new java.awt.Color(0, 153, 0));
+        txtPortalCentroSalida.setRows(5);
+        SrollCentroComercialI.setViewportView(txtPortalCentroSalida);
+
+        PanelPortales.add(SrollCentroComercialI);
+        SrollCentroComercialI.setBounds(20, 280, 100, 100);
+
+        lblPortalAlcantarillado.setForeground(new java.awt.Color(0, 153, 0));
+        lblPortalAlcantarillado.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        PanelPortales.add(lblPortalAlcantarillado);
+        lblPortalAlcantarillado.setBounds(130, 430, 100, 30);
+
+        SrollAlcantarilladoV.setBackground(new java.awt.Color(0, 0, 0));
+        SrollAlcantarilladoV.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 0), 2, true));
+        SrollAlcantarilladoV.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalAlcantarilladoRegreso.setEditable(false);
+        txtPortalAlcantarilladoRegreso.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalAlcantarilladoRegreso.setColumns(5);
+        txtPortalAlcantarilladoRegreso.setForeground(new java.awt.Color(153, 153, 0));
+        txtPortalAlcantarilladoRegreso.setRows(5);
+        SrollAlcantarilladoV.setViewportView(txtPortalAlcantarilladoRegreso);
+
+        PanelPortales.add(SrollAlcantarilladoV);
+        SrollAlcantarilladoV.setBounds(240, 400, 100, 100);
+
+        SrollAlcantarilladoI.setBackground(new java.awt.Color(0, 0, 0));
+        SrollAlcantarilladoI.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
+        SrollAlcantarilladoI.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtPortalAlcantarilladoSalida.setEditable(false);
+        txtPortalAlcantarilladoSalida.setBackground(new java.awt.Color(0, 0, 0));
+        txtPortalAlcantarilladoSalida.setColumns(5);
+        txtPortalAlcantarilladoSalida.setForeground(new java.awt.Color(0, 153, 0));
+        txtPortalAlcantarilladoSalida.setRows(5);
+        SrollAlcantarilladoI.setViewportView(txtPortalAlcantarilladoSalida);
+
+        PanelPortales.add(SrollAlcantarilladoI);
+        SrollAlcantarilladoI.setBounds(20, 400, 100, 100);
+
+        PanelGeneral.add(PanelPortales);
+        PanelPortales.setBounds(310, 100, 360, 520);
+
+        PanelSangre.setBackground(new java.awt.Color(0, 0, 0));
+        PanelSangre.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 4, true));
+        PanelSangre.setLayout(null);
+
+        lblTituloSangre.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblTituloSangre.setForeground(new java.awt.Color(153, 0, 0));
+        lblTituloSangre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloSangre.setText("SANGRE");
+        PanelSangre.add(lblTituloSangre);
+        lblTituloSangre.setBounds(20, 10, 140, 30);
+
+        PanelSubSangre.setBackground(new java.awt.Color(0, 0, 0));
+        PanelSubSangre.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 0), 4, true));
+
+        lblSangre.setFont(new java.awt.Font("Book Antiqua", 0, 18)); // NOI18N
+        lblSangre.setForeground(new java.awt.Color(153, 0, 0));
+        lblSangre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSangre.setText("0");
+
+        javax.swing.GroupLayout PanelSubSangreLayout = new javax.swing.GroupLayout(PanelSubSangre);
+        PanelSubSangre.setLayout(PanelSubSangreLayout);
+        PanelSubSangreLayout.setHorizontalGroup(
+            PanelSubSangreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelSubSangreLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lblSangre, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                .addContainerGap())
         );
-
-        jLabel1.setText("Batalla Por Hawkins");
-
-        EventPanel.setBackground(new java.awt.Color(153, 153, 0));
-
-        lblEventoActual.setBackground(new java.awt.Color(204, 0, 0));
-        lblEventoActual.setText("Evento Actual:");
-
-        javax.swing.GroupLayout EventPanelLayout = new javax.swing.GroupLayout(EventPanel);
-        EventPanel.setLayout(EventPanelLayout);
-        EventPanelLayout.setHorizontalGroup(
-            EventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(EventPanelLayout.createSequentialGroup()
+        PanelSubSangreLayout.setVerticalGroup(
+            PanelSubSangreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelSubSangreLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblEventoActual)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        EventPanelLayout.setVerticalGroup(
-            EventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(EventPanelLayout.createSequentialGroup()
-                .addComponent(lblEventoActual)
-                .addGap(4, 4, 4))
+                .addComponent(lblSangre, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(PanelHawkins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(EventPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(PanelPortales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelHawkins, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(22, 22, 22))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(PanelPortales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(EventPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        PanelSangre.add(PanelSubSangre);
+        PanelSubSangre.setBounds(0, 40, 180, 90);
 
-        txtColmena.setColumns(8);
-        txtColmena.setRows(5);
-        jScrollPane16.setViewportView(txtColmena);
+        PanelGeneral.add(PanelSangre);
+        PanelSangre.setBounds(60, 490, 180, 130);
 
-        jLabel8.setText("COLMENA");
+        lblTitulo.setFont(new java.awt.Font("Book Antiqua", 0, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(0, 153, 0));
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("LA BATALLA POR HAWKINS");
+        PanelGeneral.add(lblTitulo);
+        lblTitulo.setBounds(300, 20, 370, 70);
 
-        txtRanking.setColumns(3);
-        txtRanking.setRows(5);
-        jScrollPane17.setViewportView(txtRanking);
-
-        btnAbrirRemoto.setText("Abrir Remoto");
-        btnAbrirRemoto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAbrirRemotoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout PanelGeneralLayout = new javax.swing.GroupLayout(PanelGeneral);
-        PanelGeneral.setLayout(PanelGeneralLayout);
-        PanelGeneralLayout.setHorizontalGroup(
-            PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelGeneralLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelGeneralLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jLabel8))
-                    .addGroup(PanelGeneralLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAbrirRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane16, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(jScrollPane17)))))
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        PanelGeneralLayout.setVerticalGroup(
-            PanelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelGeneralLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(149, 149, 149))
-            .addGroup(PanelGeneralLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAbrirRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(PanelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PanelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 570, Short.MAX_VALUE)
-        );
+        getContentPane().add(PanelGeneral);
+        PanelGeneral.setBounds(0, 0, 1020, 640);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnAbrirRemotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirRemotoActionPerformed
-        new Thread(() -> {
-            try {
-                // Pequeña espera para asegurar que el servidor está listo
-                Thread.sleep(500);
-                java.awt.EventQueue.invokeLater(() -> {
-                    ModuloRemoto mr = new ModuloRemoto();
-                    mr.setVisible(true);
-                });
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }).start();
-    }//GEN-LAST:event_btnAbrirRemotoActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -972,63 +785,58 @@ public class GUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel EventPanel;
-    private javax.swing.JLabel LabelCallePrincipal;
-    private javax.swing.JLabel LabelHawkins;
-    private javax.swing.JLabel LabelRadioWSQK;
-    private javax.swing.JLabel LabelSotanoByers;
     private javax.swing.JPanel PanelCallePrincipal;
     private javax.swing.JPanel PanelGeneral;
     private javax.swing.JPanel PanelHawkins;
     private javax.swing.JPanel PanelPortales;
     private javax.swing.JPanel PanelRadioWSQK;
+    private javax.swing.JPanel PanelSangre;
     private javax.swing.JPanel PanelSotanoByers;
-    private javax.swing.JButton btnAbrirRemoto;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel22;
-    private javax.swing.JPanel jPanel23;
-    private javax.swing.JPanel jPanel24;
-    private javax.swing.JPanel jPanel25;
+    private javax.swing.JPanel PanelSubSangre;
+    private javax.swing.JPanel PanelUD;
+    private javax.swing.JScrollPane ScrollRadioWSQK;
+    private javax.swing.JScrollPane ScrollSotanoByers;
+    private javax.swing.JScrollPane SrollAlcantarilladoI;
+    private javax.swing.JScrollPane SrollAlcantarilladoV;
+    private javax.swing.JScrollPane SrollBosqueI;
+    private javax.swing.JScrollPane SrollBosqueV;
+    private javax.swing.JScrollPane SrollCallePrincipal;
+    private javax.swing.JScrollPane SrollCentroComercialI;
+    private javax.swing.JScrollPane SrollCentroComercialV;
+    private javax.swing.JScrollPane SrollLaboratorioI;
+    private javax.swing.JScrollPane SrollLaboratorioV;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane10;
-    private javax.swing.JScrollPane jScrollPane11;
-    private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JScrollPane jScrollPane13;
-    private javax.swing.JScrollPane jScrollPane14;
-    private javax.swing.JScrollPane jScrollPane15;
-    private javax.swing.JScrollPane jScrollPane16;
-    private javax.swing.JScrollPane jScrollPane17;
-    private javax.swing.JScrollPane jScrollPane18;
-    private javax.swing.JScrollPane jScrollPane19;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane20;
-    private javax.swing.JScrollPane jScrollPane21;
-    private javax.swing.JScrollPane jScrollPane22;
-    private javax.swing.JScrollPane jScrollPane23;
-    private javax.swing.JScrollPane jScrollPane24;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JLabel lblEventoActual;
+    private javax.swing.JLabel lblAlcantarillado;
+    private javax.swing.JLabel lblBosque;
+    private javax.swing.JLabel lblCallePrincipal;
+    private javax.swing.JLabel lblCentroComercial;
+    private javax.swing.JLabel lblColmena;
+    private javax.swing.JLabel lblLaboratorio;
+    private javax.swing.JLabel lblPortalAlcantarillado;
+    private javax.swing.JLabel lblPortalBosque;
+    private javax.swing.JLabel lblPortalCentroComercial;
+    private javax.swing.JLabel lblPortalLaboratorio;
+    private javax.swing.JLabel lblRadioWSQK;
+    private javax.swing.JLabel lblSangre;
+    private javax.swing.JLabel lblSotanoByers;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JLabel lblTituloColmena;
+    private javax.swing.JLabel lblTituloHawkins;
+    private javax.swing.JLabel lblTituloPortales;
+    private javax.swing.JLabel lblTituloSangre;
+    private javax.swing.JLabel lblTituloUD;
     private javax.swing.JTextArea txtAlcantarillado;
     private javax.swing.JTextArea txtBosque;
     private javax.swing.JTextArea txtCallePrincipal;
     private javax.swing.JTextArea txtCentroComercial;
-    private javax.swing.JTextArea txtColmena;
     private javax.swing.JTextArea txtDemogorgonsAlcantarillado;
     private javax.swing.JTextArea txtDemogorgonsBosque;
     private javax.swing.JTextArea txtDemogorgonsCentro;
@@ -1043,7 +851,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTextArea txtPortalLaboratorioRegreso;
     private javax.swing.JTextArea txtPortalLaboratorioSalida;
     private javax.swing.JTextArea txtRadioWSQK;
-    private javax.swing.JTextArea txtRanking;
     private javax.swing.JTextArea txtSotanoByers;
     // End of variables declaration//GEN-END:variables
 }

@@ -168,19 +168,19 @@ public class ModuloRemoto extends javax.swing.JFrame {
                         switch (tipoEvento) {
                             case "APAGÓN":
                                 nombreEvento = "Apagón del Laboratorio";
-                                descripcion = "Portales inutilizables, Demogorgons no se mueven";
+                                descripcion = "<html>Portales inutilizables, <br>Demogorgons no se <br>mueven<html>";
                                 break;
                             case "TORMENTA":
                                 nombreEvento = "Tormenta del Upside Down";
-                                descripcion = "Recolección de sangre x2, Demogorgons más rápidos";
+                                descripcion = "<html>Recolección de <br>sangre x2, Demogorgons <br>más rápidos<html>";
                                 break;
                             case "ELEVEN":
                                 nombreEvento = "Intervención de Eleven";
-                                descripcion = "Demogorgons paralizados, rescata niños de Colmena";
+                                descripcion = "<html>Demogorgons paralizados, <br>rescata niños de <br>Colmena<html>";
                                 break;
                             case "RED_MENTAL":
                                 nombreEvento = "Red Mental";
-                                descripcion = "Demogorgons se agrupan en zona con más niños";
+                                descripcion = "<html>Demogorgons se <br>agrupan en zona <br>con más niños<html>";
                                 break;
                             default:
                                 nombreEvento = tipoEvento;

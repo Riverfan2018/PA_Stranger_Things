@@ -675,11 +675,13 @@ public class GUI extends javax.swing.JFrame {
         SrollBosqueV.setBounds(240, 40, 100, 100);
 
         lblCruzandoBosque.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoBosque.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblCruzandoBosque.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
         PanelPortales.add(lblCruzandoBosque);
         lblCruzandoBosque.setBounds(130, 70, 100, 30);
 
         lblCruzandoLaboratorio.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoLaboratorio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblCruzandoLaboratorio.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
         PanelPortales.add(lblCruzandoLaboratorio);
         lblCruzandoLaboratorio.setBounds(130, 190, 100, 30);
@@ -713,6 +715,7 @@ public class GUI extends javax.swing.JFrame {
         SrollLaboratorioI.setBounds(20, 160, 100, 100);
 
         lblCruzandoCentro.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoCentro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblCruzandoCentro.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
         PanelPortales.add(lblCruzandoCentro);
         lblCruzandoCentro.setBounds(130, 310, 100, 30);
@@ -746,6 +749,7 @@ public class GUI extends javax.swing.JFrame {
         SrollCentroComercialI.setBounds(20, 280, 100, 100);
 
         lblCruzandoAlcantarillado.setForeground(new java.awt.Color(0, 153, 0));
+        lblCruzandoAlcantarillado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblCruzandoAlcantarillado.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 2, true));
         PanelPortales.add(lblCruzandoAlcantarillado);
         lblCruzandoAlcantarillado.setBounds(130, 430, 100, 30);

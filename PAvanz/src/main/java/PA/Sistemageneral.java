@@ -42,6 +42,8 @@ public class Sistemageneral {
     private final Logger logger;
     
     private volatile boolean pausado = false;
+    private long tiempoEsperaActual = 0;
+    private boolean esperandoEvento = false;
     private long tiempoFinEvento = 0;
     private String nombreEventoActual = "";
     private long tiempoProximoEvento = 0;
@@ -127,7 +129,7 @@ public class Sistemageneral {
         // Hilo temporal para que Eleven duré 5 s
         new Thread(() -> {
             try {
-                Thread.sleep(5000); 
+                sleepPausable(5000); 
                 this.eleveen_enfadada = false;
                 System.out.println("Eleven se ha cansado. Los Demogorgons vuelven a la caza...");
             } catch (InterruptedException e) { e.printStackTrace(); }
@@ -160,7 +162,7 @@ public class Sistemageneral {
 
                 try {
                     long espera = (long) (500 + Math.random() * 1500);
-                    Thread.sleep(espera);
+                    sleepPausable(espera);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -231,32 +233,47 @@ public class Sistemageneral {
                             this.wait();
                         }
                     }
-                    
-                    //Espera aleatoria de 30 a 60 segundos
-                    long espera = 30000 + rnd.nextInt(30001);
-                    tiempoProximoEvento = espera / 1000;
-                    logger.log("Próximo evento en " + (espera / 1000) + " segundos");
-                    System.out.println("Próximo evento en " + (espera / 1000) + " segundos");
-                    
+
+                    // Si estábamos en medio de una espera, continuar desde donde se quedó
+                    if (esperandoEvento && tiempoEsperaActual > 0) {
+                        logger.log("Continuando espera de evento. Faltan " + (tiempoEsperaActual / 1000) + " segundos");
+                        System.out.println("Continuando espera. Faltan " + (tiempoEsperaActual / 1000) + " segundos");
+                    } else {
+                        // Nueva espera aleatoria de 30 a 60 segundos
+                        tiempoEsperaActual = 30000 + rnd.nextInt(30001);
+                        tiempoProximoEvento = tiempoEsperaActual / 1000;
+                        logger.log("Próximo evento en " + (tiempoEsperaActual / 1000) + " segundos");
+                        System.out.println("Próximo evento en " + (tiempoEsperaActual / 1000) + " segundos");
+                    }
+
+                    esperandoEvento = true;
+
                     // Espera en intervalos pequeños para verificar pausa
-                    long tiempoRestante = espera;
+                    long tiempoRestante = tiempoEsperaActual;
                     while (tiempoRestante > 0 && !isPausado()) {
-                        long paso = Math.min(1000, tiempoRestante);
-                        Thread.sleep(paso);
+                        long paso = Math.min(100, tiempoRestante);
+                        sleepPausable(paso);
                         tiempoRestante -= paso;
+                        tiempoEsperaActual = tiempoRestante;
                         tiempoProximoEvento = tiempoRestante / 1000;
                     }
 
-                    // Si se pausó durante la espera, saltar este evento
+                    // Si se pausó durante la espera, guardar el estado y esperar reanudación
                     if (isPausado()) {
-                        continue;
+                        continue;  // Volver al while(isPausado) y esperar
                     }
+
+                    // Si terminó la espera, resetear bandera y lanzar evento
+                    esperandoEvento = false;
+                    tiempoEsperaActual = 0;
 
                     // Elegir evento (0: Apagón, 1: Tormenta, 2: Eleven, 3: Red Mental)
                     int evento = rnd.nextInt(4);
                     ejecutar_evento(evento);
 
-                } catch (InterruptedException e) { break; }
+                } catch (InterruptedException e) { 
+                    break; 
+                }
             }
         });
         gestor.setDaemon(true);
@@ -278,7 +295,7 @@ public class Sistemageneral {
                 long tiempoRestante = duracion;
                 while (tiempoRestante > 0 && !isPausado()) {
                     long paso = Math.min(1000, tiempoRestante);
-                    Thread.sleep(paso);
+                    sleepPausable(paso);
                     tiempoRestante -= paso;
                 }
 
@@ -305,7 +322,7 @@ public class Sistemageneral {
                 tiempoRestante = duracion;
                 while (tiempoRestante > 0 && !isPausado()) {
                     long paso = Math.min(1000, tiempoRestante);
-                    Thread.sleep(paso);
+                    sleepPausable(paso);
                     tiempoRestante -= paso;
                 }
 
@@ -346,7 +363,7 @@ public class Sistemageneral {
                 tiempoRestante = duracion;
                 while (tiempoRestante > 0 && !isPausado()) {
                     long paso = Math.min(1000, tiempoRestante);
-                    Thread.sleep(paso);
+                    sleepPausable(paso);
                     tiempoRestante -= paso;
                 }
 
@@ -369,7 +386,7 @@ public class Sistemageneral {
                 tiempoRestante = duracion;
                 while (tiempoRestante > 0 && !isPausado()) {
                     long paso = Math.min(1000, tiempoRestante);
-                    Thread.sleep(paso);
+                    sleepPausable(paso);
                     tiempoRestante -= paso;
                 }
 
